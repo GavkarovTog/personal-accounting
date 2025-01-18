@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account creation</title>
+    <title>Account name change</title>
 </head>
 <body>
-    <form method="POST" th:action="@{/account/create}" th:object="${accountToCreate}">
+    <form method="POST" th:action="@{/account/edit}" th:object="${accountToChange}">
         <table>
             <tr>
                 <td>
@@ -17,14 +17,13 @@
                 </td>
                 <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td>
             </tr>
-            <tr>
+            <tr style="display: none;">
                 <td>
-                    <label for="account-start-balance">Start balance</label>
+                    <input type="text" id="account-current-balance" th:field="*{id}">
                 </td>
                 <td>
-                    <input type="number" step="0.01" id="account-start-balance" th:field="*{currentBalance}">
+                    <input type="text" id="account-current-balance" th:field="*{currentBalance}">
                 </td>
-                <td th:if="${#fields.hasErrors('currentBalance')}" th:errors="*{currentBalance}"></td>
             </tr>
             <tr>
                 <td>

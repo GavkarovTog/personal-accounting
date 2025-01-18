@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Accounts list</title>
 </head>
 <body>
-    <div th:each="account: ${accounts}">
-        <p th:text="|${account.getName()} ${account.getCurrentBalance()}|"></p>
-    </div> 
+    <table>
+        <tr>
+            <td><a th:href="@{/account/create}"><button>Create account</button></a></td>
+        </tr>
+        <tr th:each="account: ${accounts}">
+            <td th:text="${account.getName()}"></td>
+            <td th:text="${account.getCurrentBalance()}"></td>
+            <td><a th:href="@{/account/edit/{accountId}(accountId=${account.getId()})}">change</a></td>
+            <td><a th:href="@{/account/delete/{accountId}(accountId=${account.getId()})}">delete</a></td>
+        </tr>
+    </table>
 </body>
 </html>

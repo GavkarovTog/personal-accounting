@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -17,7 +18,9 @@ import com.example.personalaccounting.entities.Account_;
 
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -26,6 +29,7 @@ import jakarta.validation.Valid;
 @Controller
 public class AccountController {
     private static final String ACCOUNT_TO_CREATE = "accountToCreate";
+    private static final String ACCOUNT_TO_CHANGE = "accountToChange";
 
     @PersistenceContext
     private Session session;
@@ -37,39 +41,102 @@ public class AccountController {
         return "account-creation";
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @Transactional
     public String postAccount(@Valid @ModelAttribute(ACCOUNT_TO_CREATE) Account account, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "account-creation";
         }
-
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<Account> query = cb.createQuery(Account.class);
-        Root<Account> root = query.from(Account.class);
-        query.where(cb.equal(root.get(Account_.name), account.getName()));
-        Account withTheSameName = session.createQuery(query).getSingleResultOrNull();
-        if (withTheSameName == null) {
-            session.persist(account);
-        } else {
-            bindingResult.addError(new FieldError(ACCOUNT_TO_CREATE, "name", "This name is used already"));
+        
+        if (existsAccountWithName(account.getName())) {
+            bindingResult.addError(new FieldError(ACCOUNT_TO_CREATE, "name", account.getName(), 
+            true, null, null, "Must be unique"));
             return "account-creation";
         }
 
-        return "redirect:account";
+        session.persist(account);
+        return "redirect:/account";
     }
 
     @GetMapping
     @Transactional
     public String listAccounts(Model model) {
-        CriteriaQuery<Account> query = session.getCriteriaBuilder()
-            .createQuery(Account.class);
-        query.from(Account.class);
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Account> query = cb.createQuery(Account.class);
+        Root<Account> root = query.from(Account.class);
+        query.orderBy(cb.asc(root.get(Account_.id)));
         List<Account> accounts = session.createQuery(query)
             .getResultList();
 
         model.addAttribute("accounts", accounts);
 
         return "account-list";
+    }
+
+    @GetMapping(path="/edit/{id}")
+    public String changeAccountName(@PathVariable("id") long accountId, Model model) {
+        Account account = session.byId(Account.class).load(accountId);
+        model.addAttribute(ACCOUNT_TO_CHANGE, account);
+        System.out.println("ACCOUNT HAS BALANCE: " + account.getCurrentBalance());
+        return "account-name-change";
+    }
+
+    @PostMapping(path="/edit")
+    @Transactional
+    public String postAccountNameChange(@Valid @ModelAttribute(ACCOUNT_TO_CHANGE) Account account, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "account-name-change";
+        }
+
+        Account oldNamedAccount = session.byId(Account.class).load(account.getId());
+        
+        if (oldNamedAccount.getName().equals(account.getName())) {
+            return "redirect:/account";
+        } else if (existsAccountWithName(account.getName())) {
+            bindingResult.addError(new FieldError(ACCOUNT_TO_CHANGE, "name", account.getName(), 
+            true, null, null, "Must be unique"));
+            return "account-name-change";
+        }
+        
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaUpdate<Account> query = cb.createCriteriaUpdate(Account.class);
+        Root<Account> root = query.from(Account.class);
+        query.where(
+            cb.equal(root.get(Account_.id), account.getId())
+        );
+        query.set(root.get(Account_.name), account.getName());
+        session.createMutationQuery(query).executeUpdate();
+
+        return "redirect:/account";
+    }
+
+    @GetMapping("/delete/{id}")
+    @Transactional
+    public String deleteAccount(@PathVariable("id") Long accountId, Model model) {
+        Account toDelete = session.byId(Account.class).load(accountId);
+        model.addAttribute("accountToDelete", toDelete);
+        return "account-delete-confirmation";
+    }
+
+    @PostMapping("/delete")
+    @Transactional
+    public String postAccountDeletion(Account account) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaDelete<Account> query = cb.createCriteriaDelete(Account.class);
+        Root<Account> root = query.from(Account.class);
+        query.where(cb.equal(root.get(Account_.id), account.getId()));
+        session.createMutationQuery(query).executeUpdate();
+
+        return "redirect:/account";
+    }
+
+    private boolean existsAccountWithName(String name) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Account> query = cb.createQuery(Account.class);
+        Root<Account> root = query.from(Account.class);
+        query.where(cb.equal(root.get(Account_.name), name));
+        Account withTheSameName = session.createQuery(query).getSingleResultOrNull();
+
+        return withTheSameName != null;
     }
 }
