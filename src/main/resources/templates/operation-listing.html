@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation list</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td><a th:href="@{/}">Back</a></td>
+        </tr>
+        <tr>
+            <td><a th:href="@{/operation/create}"><button>Create operation</button></a></td>
+        </tr>
+        <tr th:each="operation: ${operations}">
+            <td th:text="${operation.getAccount().getName()}"></td>
+            <td th:text="${operation.getCategory().getName()}"></td>
+            <td th:text="${operation.getPairderOperation().getId()}"></td>
+            <td th:text="${operation.getDateTimeMade()}"></td>
+            <td th:text="${operation.getBalanceChange()}"></td>
+        </tr>
+    </table>
+</body>
+</html>

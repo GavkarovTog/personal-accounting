@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category list</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td><a th:href="@{/}">Back</a></td>
+        </tr>
+        <tr>
+            <td><a th:href="@{/category/create}"><button>Create category</button></a></td>
+        </tr>
+        <tr><th align="left">Expense categories</th></tr>
+        <tr th:each="category: ${expenseCategories}">
+            <td th:text="${category.getName()}"></td>
+            <td><a th:href="@{/category/edit/{categoryId}(categoryId=${category.getId()})}">change</a></td>
+            <td><a th:href="@{/category/delete/{categoryId}(categoryId=${category.getId()})}">delete</a></td>
+        </tr>
+
+        <tr><th align="left">Income categories</th></tr>
+        <tr th:each="category: ${incomeCategories}">
+            <td th:text="${category.getName()}"></td>
+            <td><a th:href="@{/category/edit/{categoryId}(categoryId=${category.getId()})}">change</a></td>
+            <td><a th:href="@{/category/delete/{categoryId}(categoryId=${category.getId()})}">delete</a></td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -5,14 +5,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-enum CategoryType {
-    Expense, Income
-}
+
 
 @Entity
 public class Category {
+    public enum CategoryType {
+        Expense, Income
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
@@ -21,6 +24,7 @@ public class Category {
     @Size(min = 4, max = 30)
     String name;
 
+    @NotNull
     CategoryType categoryType;
 
     public Long getId() {

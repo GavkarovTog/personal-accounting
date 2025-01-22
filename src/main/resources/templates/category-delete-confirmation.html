@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category delete confirmation</title>
+</head>
+<body>
+    <form method="POST" th:action="@{/category/delete}" th:object="${categoryToDelete}">
+        <table>
+            <tr th:text="|Are you sure you want to delete category - ${categoryToDelete.getName()}?
+                It will cause deletion of all operations of this category.|"></tr>
+            <tr style="display: none;">
+                <td>
+                    <input type="text" id="category" th:field="*{id}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a th:href="@{/category}"><button form="">No</button></a>
+                </td>
+                <td>
+                    <input type="submit" value="Yes">
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

@@ -8,6 +8,9 @@
 <body>
     <table>
         <tr>
+            <td><a th:href="@{/}">Back</a></td>
+        </tr>
+        <tr>
             <td><a th:href="@{/account/create}"><button>Create account</button></a></td>
         </tr>
         <tr th:each="account: ${accounts}">

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category name change</title>
+</head>
+<body>
+    <form method="POST" th:action="@{/category/edit}" th:object="${categoryToChange}">
+        <table>
+            <tr>
+                <td>
+                    <label for="category-name">Category name</label>
+                </td>
+                <td>
+                    <input type="text" id="category-name" th:field="*{name}">
+                </td>
+                <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></td>
+            </tr>
+            <tr style="display: none;">
+                <td><input type="text" id="category-id" th:field="*{id}"></td>
+                <td>
+                    <input type="radio" th:field="*{categoryType}" th:value="${T(com.example.personalaccounting.entities.Category.CategoryType).Expense}">
+                    <label for="#ids.prev('categoryType')" th:text="Expense"></label>
+
+                    <br/>
+
+                    <input type="radio" th:field="*{categoryType}" th:value="${T(com.example.personalaccounting.entities.Category.CategoryType).Income}">
+                    <label for="#ids.prev('categoryType')" th:text="Income"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>
