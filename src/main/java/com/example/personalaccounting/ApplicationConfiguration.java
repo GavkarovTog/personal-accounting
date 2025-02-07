@@ -18,5 +18,5 @@ public class ApplicationConfiguration {
 
     public PlatformTransactionManager transactionManager() {
         return new HibernateTransactionManager();
-    }
+    } 
 }

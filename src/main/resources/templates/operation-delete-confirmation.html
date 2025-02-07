@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation delete confirmation</title>
+</head>
+<body>
+    <form method="POST" th:action="@{/operation/delete}" th:object="${operationToDelete}">
+        <table>
+            <tr th:if="*{pairedOperation == null}" th:text="|Are you sure you want to delete operation on account - *{account.getName()} with category - *{category.getName()} and balance change - *{balanceChange}?|"></tr>
+            <tr th:if="*{pairedOperation != null}" th:text="|Are you sure you want to delete transfer from source - *{account.getName()} to receiver - *{pairedOperation.getAccount().getName()} and balance change - *{balanceChange.abs()}?|"></tr>
+            <tr style="display: none;">
+                <td>
+                    <input type="text" th:field="*{id}">
+                    <input type="text" th:field="*{category}">
+                    <input type="text" th:field="*{account}">
+                    <input type="text" th:field="*{pairedOperation}">
+                    <input type="text" th:field="*{dateMade}">
+                    <input type="text" th:field="*{balanceChange}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a th:href="@{/operation}"><button form="">No</button></a>
+                </td>
+                <td>
+                    <input type="submit" value="Yes">
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

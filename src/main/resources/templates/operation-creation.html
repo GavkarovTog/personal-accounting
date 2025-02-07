@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation creation</title>
+</head>
+<body>
+    <form method="POST" th:action="@{/operation/create}" th:object="${operationToCreate}">
+        <table>
+            <tr>
+                <td>
+                    <label for="account">Account</label>
+                </td>
+                <td>
+                    <select th:field="*{account}">
+                        <option th:value="${null}"
+                                th:text="${&quot&quot}"></option>
+                        <option th:each="account: ${allAccounts}"
+                                th:value="${{account}}"
+                                th:text="${account.getName()}"></option>
+                    </select>
+                </td>
+                <td th:if="${#fields.hasErrors('account')}" th:errors="*{account}"></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="category">Category</label>
+                </td>
+                <td>
+                    <select th:field="*{category}">
+                        <option th:value="${null}"
+                                th:text="${&quot&quot}"></option>
+                        <option th:each="category: ${allCategories}"
+                                th:value="${{category}}"
+                                th:text="${category.getName()}"></option>
+                    </select>
+                </td>
+                <td th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="pairedOperation">Receiving account</label>
+                </td>
+                <td>
+                    <select th:field="*{pairedOperation}">
+                        <option th:value="${null}"
+                                th:text="${&quot&quot}"></option>
+                        <option th:each="account: ${allAccounts}"
+                                th:value="${{T(com.example.personalaccounting.entities.Operation).emptyWithAccount(account)}}"
+                                th:text="${account.getName()}"></option>
+                    </select>
+                </td>
+                <td th:if="${#fields.hasErrors('pairedOperation')}" th:errors="*{pairedOperation}"></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="dateMade">Operation made date</label>
+                </td>
+                <td>
+                    <input type="date" th:field="*{dateMade}"
+                        th:max="${T(java.time.LocalDate).now()}">
+                </td>
+                <td th:if="${#fields.hasErrors('dateMade')}" th:errors="*{dateMade}"></td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="balanceChange">Balance change</label>
+                </td>
+                <td>
+                    <input type="number" th:field="*{balanceChange}" step="0.01">
+                </td>
+                <td th:if="${#fields.hasErrors('balanceChange')}" th:errors="*{balanceChange}"></td>
+            </tr>
+            <tr>
+                <td><input type="submit"></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @NotBlank
     @Length(min = 4, max=30)
@@ -46,5 +46,19 @@ public class Account {
     
     public void setCurrentBalance(BigDecimal currentBalance) {
         this.currentBalance = currentBalance;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof Account) {
+            Account other = (Account) obj;
+            return this.id.equals(other.id);
+        }
+
+        return false;
     }
 }

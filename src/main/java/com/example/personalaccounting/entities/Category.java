@@ -50,4 +50,18 @@ public class Category {
     public void setCategoryType(CategoryType categoryType) {
         this.categoryType = categoryType;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (obj instanceof Category) {
+            Category other = (Category) obj;
+            return this.id.equals(other.id);
+        }
+
+        return false;
+    }
 }
