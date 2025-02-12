@@ -51,6 +51,8 @@
                 <td>
                     <input type="date" th:field="*{to}" th:max="${T(java.time.LocalDate).now()}">
                 </td>
+                <td th:if="${#fields.hasErrors('from')}" th:errors="*{from}"></td>
+                <td th:if="${! #fields.hasErrors('from') && #fields.hasErrors('to')}" th:errors="*{to}"></td>
             </tr>
             <tr>
                 <td>
@@ -60,7 +62,8 @@
         </table>
     </form>
     
-    <table>
+    <br>
+    <table style="border: 5px ridge; background-color: whitesmoke;">
         
         
         <tr>
