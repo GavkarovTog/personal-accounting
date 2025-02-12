@@ -2,6 +2,7 @@ package com.example.personalaccounting.controllers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.personalaccounting.dataobjects.OperationFilters;
+import com.example.personalaccounting.dataobjects.OperationFilters.OperationType;
 import com.example.personalaccounting.entities.Account;
 import com.example.personalaccounting.entities.Category;
 import com.example.personalaccounting.entities.Operation;
@@ -54,34 +57,7 @@ public class OperationController {
     public String postOperation(
         @Valid @ModelAttribute(OPERATION_TO_CREATE) Operation operation, 
         BindingResult bindingResult) {
-
         validateOperation(operation, bindingResult);
-
-        // Category category = operation.getCategory();
-        // Operation paired = operation.getPairedOperation();
-
-        // if (category == null && paired == null) {
-        //     bindingResult.addError(new FieldError(OPERATION_TO_CREATE, "category",
-        //         null, true, null, null, "Can't be empty simultaneously with receiver account"));
-        // } else if (category != null && paired != null) {
-        //     bindingResult.addError(new FieldError(OPERATION_TO_CREATE, "category",
-        //         null, true, null, null, "Receiver operation can't have category"));
-        // } 
-        
-        // Account sourceAccount = operation.getAccount();
-        // Account receivingAccount = paired == null ? null : paired.getAccount();
-        // if (sourceAccount != null && sourceAccount.equals(receivingAccount)) {
-        //     String idForPairedSelector = "A" + paired.getAccount().getId();
-
-        //     bindingResult.addError(new FieldError(OPERATION_TO_CREATE, "pairedOperation",
-        //         idForPairedSelector, true, null, null, "Receiver account can't be the same as source"));
-        // }
-
-        // BigDecimal balanceChange = operation.getBalanceChange();
-        // if (balanceChange != null && balanceChange.signum() != 1) {
-        //     bindingResult.addError(new FieldError(OPERATION_TO_CREATE, "balanceChange",
-        //         balanceChange, true, null, null, "Balance change must be positive"));
-        // }
 
         if (bindingResult.hasErrors()) {
             return "operation-creation";
@@ -120,6 +96,7 @@ public class OperationController {
     @GetMapping
     public String getOperations(Model Model) {
         Model.addAttribute("operations", operationRepository.findAllByOrderByIdDescDateMadeDesc());
+        Model.addAttribute("operationFilters", new OperationFilters());
         return "operation-listing";
     }
 
@@ -150,13 +127,6 @@ public class OperationController {
         } else if (category.getCategoryType() == CategoryType.Expense) {
             operation.setBalanceChange(balanceChange.negate());
         }
-
-        // System.out.println(String.format("ID        %30s %30s", operation.getId(), paired.getId()));
-        // System.out.println(String.format("Account   %30s %30s", operation.getAccount().getId(), paired.getAccount().getId()));
-        // // System.out.println(String.format("Category  %30s %30s", operation.getCategory().getName(), paired.getCategory().getName()));
-        // System.out.println(String.format("DateMade  %30s %30s", operation.getDateMade(), paired.getDateMade()));
-        // System.out.println(String.format("Balance   %30s %30s", operation.getBalanceChange(), paired.getBalanceChange()));
-
 
         operationRepository.save(operation);
 
@@ -281,5 +251,20 @@ public class OperationController {
     @ModelAttribute("allCategories") 
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @ModelAttribute("allExpenseCategories") 
+    public List<Category> getAllExpenseCategories() {
+        return categoryRepository.findByCategoryTypeOrderById(CategoryType.Expense);
+    }
+
+    @ModelAttribute("allIncomeCategories") 
+    public List<Category> getAllIncomeCategories() {
+        return categoryRepository.findByCategoryTypeOrderById(CategoryType.Income);
+    }
+
+    @ModelAttribute("allOperationTypes")
+    public List<OperationType> getAllOperationTypes() {
+        return Arrays.asList(OperationType.values());
     }
 }

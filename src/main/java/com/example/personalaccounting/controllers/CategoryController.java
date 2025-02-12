@@ -1,5 +1,6 @@
 package com.example.personalaccounting.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -14,13 +15,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.personalaccounting.entities.Account;
+import com.example.personalaccounting.entities.Account_;
 import com.example.personalaccounting.entities.Category;
 import com.example.personalaccounting.entities.Category_;
+import com.example.personalaccounting.entities.Operation;
+import com.example.personalaccounting.entities.Operation_;
 import com.example.personalaccounting.entities.Category.CategoryType;
 import com.example.personalaccounting.repositories.CategoryRepository;
 
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.Root;
@@ -120,7 +127,32 @@ public class CategoryController {
     }
 
     @PostMapping("/delete")
+    @Transactional
     public String postCategoryDelete(Category categoryToDelete) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Tuple> getAccountsTotalChanges = cb.createQuery(Tuple.class);
+        Root<Operation> root = getAccountsTotalChanges.from(Operation.class);
+        getAccountsTotalChanges.multiselect(root.get(Operation_.account), cb.sum(root.get(Operation_.balanceChange)));
+        getAccountsTotalChanges.groupBy(root.get(Operation_.account));
+        getAccountsTotalChanges.where(cb.equal(root.get(Operation_.category), categoryToDelete));
+
+        List<Tuple> accountChanges = session.createQuery(getAccountsTotalChanges).getResultList();
+        for (Tuple tuple: accountChanges) {
+            Account account = (Account) tuple.get(0);
+            BigDecimal totalAccountChange = (BigDecimal) tuple.get(1);
+
+            CriteriaUpdate<Account> revertAccountChange = cb.createCriteriaUpdate(Account.class);
+            Root<Account> accountRoot = revertAccountChange.from(Account.class);
+            revertAccountChange.where(cb.equal(accountRoot.get(Account_.id), account.getId()));
+            revertAccountChange.set(accountRoot.get(Account_.currentBalance), account.getCurrentBalance().subtract(totalAccountChange));
+            session.createMutationQuery(revertAccountChange).executeUpdate();
+        }
+
+        CriteriaDelete<Operation> deleteOperationsWithCategory = cb.createCriteriaDelete(Operation.class);
+        root = deleteOperationsWithCategory.from(Operation.class);
+        deleteOperationsWithCategory.where(cb.equal(root.get(Operation_.category), categoryToDelete));
+        session.createMutationQuery(deleteOperationsWithCategory).executeUpdate();
+
         categoryRepository.deleteById(categoryToDelete.getId());
         return "redirect:/category";
     }

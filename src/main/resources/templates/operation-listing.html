@@ -10,17 +10,79 @@
         <tr>
             <td><a th:href="@{/}">Back</a></td>
         </tr>
+    </table>
+    <form method="GET" th:action="@{/operation}" th:object="${operationFilters}">
+        <table style="border: 5px ridge; background-color: whitesmoke;">
+            
+            <tr>
+                <td>Operation type</td>
+                <td th:each="operationType: ${allOperationTypes}">
+                    <input type="checkbox" th:field="*{operationTypes}" th:value="${{operationType}}">
+                    <label for="${#ids.prev('operationType')}" th:text="${operationType}"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>Accounts</td>
+                <td th:each="account: ${allAccounts}">
+                    <input type="checkbox" th:field="*{accounts}" th:value="${{account}}">
+                    <label for="${#ids.prev('accounts')}" th:text="${account.getName()}"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>Expense categories</td>
+                <td th:each="category: ${allExpenseCategories}">
+                    <input type="checkbox" th:field="*{categories}" th:value="${{category}}">
+                    <label for="${#ids.prev('categories')}" th:text="${category.getName()}"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>Income categories</td>
+                <td th:each="category: ${allIncomeCategories}">
+                    <input type="checkbox" th:field="*{categories}" th:value="${{category}}">
+                    <label for="${#ids.prev('categories')}" th:text="${category.getName()}"></label>
+                </td>
+            </tr>
+            <tr>
+                <td>From</td>
+                <td>
+                    <input type="date" th:field="*{from}" th:max="${T(java.time.LocalDate).now()}">
+                </td>
+                <td>To</td>
+                <td>
+                    <input type="date" th:field="*{to}" th:max="${T(java.time.LocalDate).now()}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Filter">
+                </td>
+            </tr>
+        </table>
+    </form>
+    
+    <table>
+        
+        
         <tr>
             <td><a th:href="@{/operation/create}"><button>Create operation</button></a></td>
         </tr>
         <div th:each="operation: ${operations}">
             <tr th:if="${operation.getPairedOperation() == null || operation.getBalanceChange().signum() == -1}">
-                <td th:text="${operation.getAccount().getName()}"></td>
-                <div th:if="${operation.getPairedOperation() == null}">
+                <td th:if="${operation.getPairedOperation() != null || operation.getCategory() != null}" th:text="${operation.getAccount().getName()}"></td>
+                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
+                    <td th:if="${operation.getBalanceChange().signum() == 1}" style="color: red;">ORPHANED TRANSFER</td>
+                    <td th:if="${operation.getBalanceChange().signum() == -1}" th:text="${operation.getAccount().getName()}"></td>
+                </div>
+
+                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() != null}">
                     <td th:text="${operation.getCategory().getName()}"></td>
                 </div>
                 <div th:if="${operation.getPairedOperation() != null}">
                     <td th:text="|- - >${operation.getPairedOperation().getAccount().getName()}|"></td>
+                </div>
+                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
+                    <td th:if="${operation.getBalanceChange().signum() == -1}" style="color: red;">-->ORPHANED TRANSFER</td>
+                    <td th:if="${operation.getBalanceChange().signum() == 1}" th:text="|-->${operation.getAccount().getName()}|"></td>
                 </div>
 
                 <td th:text="${operation.getDateMade()}"></td>
