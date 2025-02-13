@@ -52,7 +52,7 @@
                     <input type="date" th:field="*{to}" th:max="${T(java.time.LocalDate).now()}">
                 </td>
                 <td th:if="${#fields.hasErrors('from')}" th:errors="*{from}"></td>
-                <td th:if="${#fields.hasErrors('from') && ! #fields.hasErrors('to')}" th:errors="*{to}"></td>
+                <td th:if="${! #fields.hasErrors('from') && #fields.hasErrors('to')}" th:errors="*{to}"></td>
             </tr>
             <tr>
                 <td>

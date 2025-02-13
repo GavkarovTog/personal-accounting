@@ -13,7 +13,7 @@ import jakarta.validation.constraints.PastOrPresent;
 
 public class OperationFilters {
     public enum OperationType {
-        Expense, Income, Transfer
+        Expense, Income, Transfer, OrphanedTransfer
     }
 
     private List<OperationType> operationTypes = new ArrayList<>();
