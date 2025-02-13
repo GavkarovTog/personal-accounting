@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,11 @@ import com.example.personalaccounting.repositories.AccountRepository;
 import com.example.personalaccounting.repositories.CategoryRepository;
 import com.example.personalaccounting.repositories.OperationRepository;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Controller
@@ -33,6 +39,9 @@ import jakarta.validation.Valid;
 public class OperationController {
     private static final String OPERATION_TO_CREATE = "operationToCreate";
     private static final String OPERATION_TO_CHANGE = "operationToChange";
+
+    @Autowired
+    private Session session;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -49,7 +58,7 @@ public class OperationController {
         operationToCreate.setDateMade(LocalDate.now());
 
         model.addAttribute(OPERATION_TO_CREATE, operationToCreate);
-       
+
         return "operation-creation";
     }
 
@@ -94,9 +103,21 @@ public class OperationController {
     }
 
     @GetMapping
-    public String getOperations(Model Model) {
-        Model.addAttribute("operations", operationRepository.findAllByOrderByIdDescDateMadeDesc());
-        Model.addAttribute("operationFilters", new OperationFilters());
+    public String getOperations(Model Model, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
+        if (operationFilters == null) {
+            operationFilters = new OperationFilters();
+        }
+
+        LocalDate from = operationFilters.getFrom();
+        LocalDate to = operationFilters.getTo();
+
+        if (from != null && to != null && from.isAfter(to)) {
+            bindingResult.addError(new FieldError(OPERATION_TO_CHANGE, "from",
+                from, true, null, null, "From date can't be after To date"));
+        }
+
+        Model.addAttribute("operations", getFilteredOperations(operationFilters));
+        Model.addAttribute("operationFilters", operationFilters);
         return "operation-listing";
     }
 
@@ -240,6 +261,24 @@ public class OperationController {
             }
         } else if (originalPair != null) {
             operationRepository.delete(originalPair);
+        }
+    }
+
+    @Transactional
+    private List<Operation> getFilteredOperations(OperationFilters operationFilters) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Operation> query = cb.createQuery(Operation.class);
+        Root<Operation> root = query.from(Operation.class);
+        
+        Expression<Boolean> filterWhere = cb.literal(true);
+
+        for (OperationType type: operationFilters.getOperationTypes()) {
+            if (type == OperationType.Transfer) {
+                filterWhere = cb.or(
+                    cb.isTrue(filterWhere)
+                    
+                );
+            }
         }
     }
 

@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.example.personalaccounting.entities.Account;
 import com.example.personalaccounting.entities.Category;
 
@@ -18,9 +20,11 @@ public class OperationFilters {
     private List<Account> accounts = new ArrayList<>();
     private List<Category> categories = new ArrayList<>();
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @PastOrPresent
     private LocalDate from;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @PastOrPresent
     private LocalDate to;
 
