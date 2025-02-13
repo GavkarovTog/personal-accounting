@@ -30,9 +30,13 @@ import com.example.personalaccounting.repositories.AccountRepository;
 import com.example.personalaccounting.repositories.CategoryRepository;
 import com.example.personalaccounting.repositories.OperationRepository;
 
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -43,7 +47,7 @@ public class OperationController {
     private static final String OPERATION_TO_CREATE = "operationToCreate";
     private static final String OPERATION_TO_CHANGE = "operationToChange";
 
-    @Autowired
+    @PersistenceContext
     private Session session;
 
     @Autowired
@@ -115,7 +119,7 @@ public class OperationController {
         LocalDate to = operationFilters.getTo();
 
         if (from != null && to != null && from.isAfter(to)) {
-            bindingResult.addError(new FieldError(OPERATION_TO_CHANGE, "from",
+            bindingResult.addError(new FieldError("operationFilters", "from",
                 from, true, null, null, "From date can't be after To date"));
         }
 
@@ -279,38 +283,95 @@ public class OperationController {
 
         List<OperationType> operationTypes = operationFilters.getOperationTypes();
         Expression<Boolean> isOperationTypeSelected = cb.literal(operationTypes.isEmpty());
+        Join<Operation, Category> categoryJoin = root.join(Operation_.category, JoinType.LEFT);
         for (OperationType operationType: operationTypes) {
             if (operationType == OperationType.Expense) {
+
                 isOperationTypeSelected = cb.or(
                     isOperationTypeSelected,
                     cb.and(
-                        cb.isNotNull(root.get(Operation_.category)),
-                        cb.equal(root.get(Operation_.category).get(Category_.categoryType), CategoryType.Expense)
+                        cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Expense)
                     )
                 );
             } else if (operationType == OperationType.Income) {
+
                 isOperationTypeSelected = cb.or(
                     isOperationTypeSelected,
                     cb.and(
-                        cb.isNotNull(root.get(Operation_.category)),
-                        cb.equal(root.get(Operation_.category).get(Category_.categoryType), CategoryType.Income)
+                        cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Income)
                     )
                 );
             } else if (operationType == OperationType.Transfer) {
                 isOperationTypeSelected = cb.or(
                     isOperationTypeSelected,
-                    cb.and(
-                        cb.isNotNull(root.get(Operation_.pairedOperation))
-                    )
+                    cb.isNotNull(root.get(Operation_.pairedOperation))
                 );
             } else if (operationType == OperationType.OrphanedTransfer) {
-                // ...
+                isOperationTypeSelected = cb.or(
+                    isOperationTypeSelected,
+                    cb.and(
+                        cb.isNull(root.get(Operation_.pairedOperation)),
+                        cb.isNull(root.get(Operation_.category))
+                    )
+                );
+            } else {
+                throw new UnsupportedOperationException("Unknown operation type is encountered while trying to filter operations");
             }
-
-            throw new UnsupportedOperationException("Unknown operation type is encountered while trying to filter operations");
         }
 
-        return new ArrayList<>();
+        List<Account> accounts = operationFilters.getAccounts();
+        Expression<Boolean> isAccountSelected = cb.literal(accounts.isEmpty());
+        Join<Operation, Operation> pairedOperationJoin = root.join(Operation_.pairedOperation, JoinType.LEFT);
+        for (Account account: accounts) {
+            isAccountSelected = cb.or(
+                isAccountSelected,
+                cb.or(
+                    cb.equal(root.get(Operation_.account), account),
+                    cb.and(
+                        cb.equal(pairedOperationJoin.get(Operation_.account), account)
+                    )
+                )
+            );
+        }
+
+        List<Category> categories = operationFilters.getCategories();
+        Expression<Boolean> isCategorySelected = cb.literal(categories.isEmpty());
+        for (Category category: categories) {
+            isCategorySelected = cb.or(
+                isCategorySelected,
+                cb.equal(root.get(Operation_.category), category)
+            );
+        }
+
+        LocalDate from = operationFilters.getFrom();
+        LocalDate to = operationFilters.getTo();
+        Path<LocalDate> operationDate = root.get(Operation_.dateMade);
+        Expression<Boolean> isOperationDateBetweenFromAndTo;
+
+        if (from == null && to == null) {
+            isOperationDateBetweenFromAndTo = cb.literal(true);
+        } else if (from != null && to != null) {
+            isOperationDateBetweenFromAndTo = cb.between(operationDate, from, to);
+        } else if (from != null) {
+            isOperationDateBetweenFromAndTo = cb.greaterThanOrEqualTo(operationDate, from);
+        } else {
+            isOperationDateBetweenFromAndTo = cb.lessThanOrEqualTo(operationDate, to);
+        }
+
+        query.where(
+            cb.and(
+                isOperationTypeSelected,
+                cb.and(
+                    isAccountSelected,
+                    cb.and (
+                        isCategorySelected,
+                        isOperationDateBetweenFromAndTo
+                    )
+                )
+            )
+        );
+
+        return session.createQuery(query).getResultList();
     }
 
     @ModelAttribute("allAccounts")
