@@ -60,39 +60,45 @@
                 </td>
             </tr>
         </table>
-    </form>
-    <br>
-    <table style="border: 5px ridge; background-color: whitesmoke;">
-        <tr>
-            <td><a th:href="@{/operation/create}"><button>Create operation</button></a></td>
-        </tr>
-        <div th:each="operation: ${operations}">
-            <tr th:if="${operation.getPairedOperation() == null || operation.getBalanceChange().signum() == -1}">
-                <td th:if="${operation.getPairedOperation() != null || operation.getCategory() != null}" th:text="${operation.getAccount().getName()}"></td>
-                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
-                    <td th:if="${operation.getBalanceChange().signum() == 1}" style="color: red;">ORPHANED TRANSFER</td>
-                    <td th:if="${operation.getBalanceChange().signum() == -1}" th:text="${operation.getAccount().getName()}"></td>
-                </div>
-
-                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() != null}">
-                    <td th:text="${operation.getCategory().getName()}"></td>
-                </div>
-                <div th:if="${operation.getPairedOperation() != null}">
-                    <td th:text="|- - >${operation.getPairedOperation().getAccount().getName()}|"></td>
-                </div>
-                <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
-                    <td th:if="${operation.getBalanceChange().signum() == -1}" style="color: red;">-->ORPHANED TRANSFER</td>
-                    <td th:if="${operation.getBalanceChange().signum() == 1}" th:text="|-->${operation.getAccount().getName()}|"></td>
-                </div>
-
-                <td th:text="${operation.getDateMade()}"></td>
-                <td th:if="${operation.getPairedOperation() == null}" align="right" th:text="${operation.getBalanceChange()}"></td>
-                <td th:if="${operation.getPairedOperation() != null}" align="right" th:text="${operation.getBalanceChange().abs()}"></td>
-
-                <td><a th:href="@{/operation/edit/{id}(id=${operation.getId()})}">Change</a></td>
-                <td><a th:href="@{/operation/delete/{id}(id=${operation.getId()})}">Delete</a></td>
+        <br>
+        <table style="border: 5px ridge; background-color: whitesmoke;">
+            <tr>
+                <td><a th:href="@{/operation/create}"><button>Create operation</button></a></td>
             </tr>
+            <div th:each="operation: ${operations}">
+                <tr th:if="${operation.getPairedOperation() == null || operation.getBalanceChange().signum() == -1}">
+                    <td th:if="${operation.getPairedOperation() != null || operation.getCategory() != null}" th:text="${operation.getAccount().getName()}"></td>
+                    <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
+                        <td th:if="${operation.getBalanceChange().signum() == 1}" style="color: red;">ORPHANED TRANSFER</td>
+                        <td th:if="${operation.getBalanceChange().signum() == -1}" th:text="${operation.getAccount().getName()}"></td>
+                    </div>
+
+                    <div th:if="${operation.getPairedOperation() == null && operation.getCategory() != null}">
+                        <td th:text="${operation.getCategory().getName()}"></td>
+                    </div>
+                    <div th:if="${operation.getPairedOperation() != null}">
+                        <td th:text="|- - >${operation.getPairedOperation().getAccount().getName()}|"></td>
+                    </div>
+                    <div th:if="${operation.getPairedOperation() == null && operation.getCategory() == null}">
+                        <td th:if="${operation.getBalanceChange().signum() == -1}" style="color: red;">- ->ORPHANED TRANSFER</td>
+                        <td th:if="${operation.getBalanceChange().signum() == 1}" th:text="|- ->${operation.getAccount().getName()}|"></td>
+                    </div>
+
+                    <td th:text="${operation.getDateMade()}"></td>
+                    <td th:if="${operation.getPairedOperation() == null}" align="right" th:text="${operation.getBalanceChange()}"></td>
+                    <td th:if="${operation.getPairedOperation() != null}" align="right" th:text="${operation.getBalanceChange().abs()}"></td>
+
+                    <td><a th:href="@{/operation/edit/{id}(id=${operation.getId()})}">Change</a></td>
+                    <td><a th:href="@{/operation/delete/{id}(id=${operation.getId()})}">Delete</a></td>
+                </tr>
+            </div>
+        </table>
+
+        <div>
+            <a th:href="@{/operation?{params}(params=${urlParameters == null ? '' : urlParameters})}">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
         </div>
-    </table>
+    </form>
 </body>
 </html>

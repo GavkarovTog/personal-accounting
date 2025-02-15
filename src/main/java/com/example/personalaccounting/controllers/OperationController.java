@@ -7,6 +7,9 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,6 +40,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -109,7 +113,11 @@ public class OperationController {
     }
 
     @GetMapping
-    public String getOperations(Model Model, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
+    public String getOperations(HttpServletRequest httpRequest, Model Model, Pageable pageable, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
+        if (pageable == null) {
+            pageable = PageRequest.of(0, 15);
+        }
+        
         if (operationFilters == null) {
             operationFilters = new OperationFilters();
         }
@@ -122,8 +130,11 @@ public class OperationController {
                 from, true, null, null, "From date can't be after To date"));
         }
 
-        Model.addAttribute("operations", getFilteredOperations(operationFilters));
+        System.out.println("PARAMS: " + httpRequest.getQueryString());
+        Model.addAttribute("urlParameters", httpRequest.getQueryString());
+        Model.addAttribute("operations", getFilteredOperations(operationFilters, pageable));
         Model.addAttribute("operationFilters", operationFilters);
+        Model.addAttribute("pageable", pageable);
         return "operation-listing";
     }
 
@@ -275,7 +286,7 @@ public class OperationController {
     }
 
     @Transactional
-    private List<Operation> getFilteredOperations(OperationFilters operationFilters) {
+    private List<Operation> getFilteredOperations(OperationFilters operationFilters, Pageable pageable) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Operation> query = cb.createQuery(Operation.class);
         Root<Operation> root = query.from(Operation.class);
@@ -370,6 +381,7 @@ public class OperationController {
         );
 
         query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
+
 
         return session.createQuery(query).getResultList();
     }
