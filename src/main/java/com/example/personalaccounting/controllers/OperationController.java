@@ -2,7 +2,6 @@ package com.example.personalaccounting.controllers;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -282,24 +281,20 @@ public class OperationController {
         Root<Operation> root = query.from(Operation.class);
 
         List<OperationType> operationTypes = operationFilters.getOperationTypes();
-        Expression<Boolean> isOperationTypeSelected = cb.literal(operationTypes.isEmpty());
+        Expression<Boolean> isOperationTypeSelected = cb.literal(false);
         Join<Operation, Category> categoryJoin = root.join(Operation_.category, JoinType.LEFT);
         for (OperationType operationType: operationTypes) {
             if (operationType == OperationType.Expense) {
 
                 isOperationTypeSelected = cb.or(
                     isOperationTypeSelected,
-                    cb.and(
-                        cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Expense)
-                    )
+                    cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Expense)
                 );
             } else if (operationType == OperationType.Income) {
 
                 isOperationTypeSelected = cb.or(
                     isOperationTypeSelected,
-                    cb.and(
-                        cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Income)
-                    )
+                    cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Income)
                 );
             } else if (operationType == OperationType.Transfer) {
                 isOperationTypeSelected = cb.or(
@@ -335,7 +330,7 @@ public class OperationController {
         }
 
         List<Category> categories = operationFilters.getCategories();
-        Expression<Boolean> isCategorySelected = cb.literal(categories.isEmpty());
+        Expression<Boolean> isCategorySelected = cb.literal(false);
         for (Category category: categories) {
             isCategorySelected = cb.or(
                 isCategorySelected,
@@ -360,16 +355,21 @@ public class OperationController {
 
         query.where(
             cb.and(
-                isOperationTypeSelected,
+                isAccountSelected,
                 cb.and(
-                    isAccountSelected,
-                    cb.and (
-                        isCategorySelected,
-                        isOperationDateBetweenFromAndTo
-                    )
+                    cb.or(
+                        cb.or(
+                            isOperationTypeSelected,
+                            cb.literal(categories.isEmpty() && operationTypes.isEmpty())
+                        ),
+                        isCategorySelected
+                    ),
+                    isOperationDateBetweenFromAndTo
                 )
             )
         );
+
+        query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
 
         return session.createQuery(query).getResultList();
     }
