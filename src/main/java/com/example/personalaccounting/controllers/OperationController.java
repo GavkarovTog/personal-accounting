@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.personalaccounting.dataobjects.OperationFilters;
 import com.example.personalaccounting.dataobjects.OperationFilters.OperationType;
@@ -49,6 +51,7 @@ import jakarta.validation.Valid;
 public class OperationController {
     private static final String OPERATION_TO_CREATE = "operationToCreate";
     private static final String OPERATION_TO_CHANGE = "operationToChange";
+    private static final int pageSize = 15;
 
     @PersistenceContext
     private Session session;
@@ -113,9 +116,9 @@ public class OperationController {
     }
 
     @GetMapping
-    public String getOperations(HttpServletRequest httpRequest, Model Model, Pageable pageable, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
-        if (pageable == null) {
-            pageable = PageRequest.of(0, 15);
+    public String getOperations(@RequestParam Integer currentPage, HttpServletRequest httpRequest, Model Model, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
+        if (currentPage == null) {
+            currentPage = 0;
         }
         
         if (operationFilters == null) {
@@ -130,11 +133,15 @@ public class OperationController {
                 from, true, null, null, "From date can't be after To date"));
         }
 
-        System.out.println("PARAMS: " + httpRequest.getQueryString());
+        long countOfFilteredOperation = getFilteredOperationsCount(operationFilters);
+        int totalPagesCount = (int) (countOfFilteredOperation / pageSize);
+        int leftmostPageNumber = Math.max(currentPage - 2, 0);
+        int rightmostPageNumber = Math.max(currentPage + 2, 0);
+
         Model.addAttribute("urlParameters", httpRequest.getQueryString());
-        Model.addAttribute("operations", getFilteredOperations(operationFilters, pageable));
+        Model.addAttribute("operations", getFilteredOperations(operationFilters, currentPage));
         Model.addAttribute("operationFilters", operationFilters);
-        Model.addAttribute("pageable", pageable);
+        // Model.addAttribute("pageable", pageable);
         return "operation-listing";
     }
 
@@ -286,7 +293,109 @@ public class OperationController {
     }
 
     @Transactional
-    private List<Operation> getFilteredOperations(OperationFilters operationFilters, Pageable pageable) {
+    private long getFilteredOperationsCount(OperationFilters operationFilters) {
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Operation> root = query.from(Operation.class);
+
+        List<OperationType> operationTypes = operationFilters.getOperationTypes();
+        Expression<Boolean> isOperationTypeSelected = cb.literal(false);
+        Join<Operation, Category> categoryJoin = root.join(Operation_.category, JoinType.LEFT);
+        for (OperationType operationType: operationTypes) {
+            if (operationType == OperationType.Expense) {
+
+                isOperationTypeSelected = cb.or(
+                    isOperationTypeSelected,
+                    cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Expense)
+                );
+            } else if (operationType == OperationType.Income) {
+
+                isOperationTypeSelected = cb.or(
+                    isOperationTypeSelected,
+                    cb.equal(categoryJoin.get(Category_.categoryType), CategoryType.Income)
+                );
+            } else if (operationType == OperationType.Transfer) {
+                isOperationTypeSelected = cb.or(
+                    isOperationTypeSelected,
+                    cb.isNotNull(root.get(Operation_.pairedOperation))
+                );
+            } else if (operationType == OperationType.OrphanedTransfer) {
+                isOperationTypeSelected = cb.or(
+                    isOperationTypeSelected,
+                    cb.and(
+                        cb.isNull(root.get(Operation_.pairedOperation)),
+                        cb.isNull(root.get(Operation_.category))
+                    )
+                );
+            } else {
+                throw new UnsupportedOperationException("Unknown operation type is encountered while trying to filter operations");
+            }
+        }
+
+        List<Account> accounts = operationFilters.getAccounts();
+        Expression<Boolean> isAccountSelected = cb.literal(accounts.isEmpty());
+        Join<Operation, Operation> pairedOperationJoin = root.join(Operation_.pairedOperation, JoinType.LEFT);
+        for (Account account: accounts) {
+            isAccountSelected = cb.or(
+                isAccountSelected,
+                cb.or(
+                    cb.equal(root.get(Operation_.account), account),
+                    cb.and(
+                        cb.equal(pairedOperationJoin.get(Operation_.account), account)
+                    )
+                )
+            );
+        }
+
+        List<Category> categories = operationFilters.getCategories();
+        Expression<Boolean> isCategorySelected = cb.literal(false);
+        for (Category category: categories) {
+            isCategorySelected = cb.or(
+                isCategorySelected,
+                cb.equal(root.get(Operation_.category), category)
+            );
+        }
+
+        LocalDate from = operationFilters.getFrom();
+        LocalDate to = operationFilters.getTo();
+        Path<LocalDate> operationDate = root.get(Operation_.dateMade);
+        Expression<Boolean> isOperationDateBetweenFromAndTo;
+
+        if (from == null && to == null) {
+            isOperationDateBetweenFromAndTo = cb.literal(true);
+        } else if (from != null && to != null) {
+            isOperationDateBetweenFromAndTo = cb.between(operationDate, from, to);
+        } else if (from != null) {
+            isOperationDateBetweenFromAndTo = cb.greaterThanOrEqualTo(operationDate, from);
+        } else {
+            isOperationDateBetweenFromAndTo = cb.lessThanOrEqualTo(operationDate, to);
+        }
+
+        query.where(
+            cb.and(
+                isAccountSelected,
+                cb.and(
+                    cb.or(
+                        cb.or(
+                            isOperationTypeSelected,
+                            cb.literal(categories.isEmpty() && operationTypes.isEmpty())
+                        ),
+                        isCategorySelected
+                    ),
+                    isOperationDateBetweenFromAndTo
+                )
+            )
+        );
+
+        query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
+        query.select(cb.count(root.get(Operation_.id)));
+
+        return session.createQuery(query).getResultList().get(0);
+    }
+
+
+    @Transactional
+    private List<Operation> getFilteredOperations(OperationFilters operationFilters, int currentPage) {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<Operation> query = cb.createQuery(Operation.class);
         Root<Operation> root = query.from(Operation.class);
@@ -382,8 +491,8 @@ public class OperationController {
 
         query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
 
-
-        return session.createQuery(query).getResultList();
+        Page page = Page.page(15, currentPage);
+        return session.createQuery(query).setPage(page).getResultList();
     }
 
     @ModelAttribute("allAccounts")
