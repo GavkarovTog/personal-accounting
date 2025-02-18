@@ -95,9 +95,7 @@
         </table>
 
         <div>
-            <a th:href="@{/operation?{params}(params=${urlParameters == null ? '' : urlParameters})}">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
+            <a style="margin-right: 10px;" th:each="page: ${pages}" th:text="${page + 1}" th:href="|/operation?${urlParameters}|${urlParameters == null ? '' : '&'}||"></a>
         </div>
     </form>
 </body>

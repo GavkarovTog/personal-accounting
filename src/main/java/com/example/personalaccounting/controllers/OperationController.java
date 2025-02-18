@@ -1,16 +1,17 @@
 package com.example.personalaccounting.controllers;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 import org.hibernate.Session;
 import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.personalaccounting.dataobjects.OperationFilters;
 import com.example.personalaccounting.dataobjects.OperationFilters.OperationType;
@@ -116,11 +118,7 @@ public class OperationController {
     }
 
     @GetMapping
-    public String getOperations(@RequestParam Integer currentPage, HttpServletRequest httpRequest, Model Model, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
-        if (currentPage == null) {
-            currentPage = 0;
-        }
-        
+    public String getOperations(@RequestParam(required = false, defaultValue = "0") int currentPage, HttpServletRequest httpRequest, Model Model, @Valid OperationFilters operationFilters, BindingResult bindingResult) {
         if (operationFilters == null) {
             operationFilters = new OperationFilters();
         }
@@ -134,14 +132,23 @@ public class OperationController {
         }
 
         long countOfFilteredOperation = getFilteredOperationsCount(operationFilters);
-        int totalPagesCount = (int) (countOfFilteredOperation / pageSize);
+        int totalPagesCount = (int) Math.ceil((double) countOfFilteredOperation / pageSize);
         int leftmostPageNumber = Math.max(currentPage - 2, 0);
-        int rightmostPageNumber = Math.max(currentPage + 2, 0);
+        int rightmostPageNumber = Math.min(leftmostPageNumber + 4, totalPagesCount - 1);
 
-        Model.addAttribute("urlParameters", httpRequest.getQueryString());
+        String params = UriComponentsBuilder
+            .fromUri(URI.create(httpRequest.getRequestURI()))
+            .query(httpRequest.getQueryString())
+            .replaceQueryParam("currentPage")
+            .build(false).getQuery();
+
+        System.out.println(params);
+
+        Model.addAttribute("urlParameters", params);
         Model.addAttribute("operations", getFilteredOperations(operationFilters, currentPage));
         Model.addAttribute("operationFilters", operationFilters);
-        // Model.addAttribute("pageable", pageable);
+        Model.addAttribute("currentPage", currentPage);
+        Model.addAttribute("pages", IntStream.range(leftmostPageNumber, rightmostPageNumber + 1).boxed().toList());
         return "operation-listing";
     }
 
@@ -387,7 +394,6 @@ public class OperationController {
             )
         );
 
-        query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
         query.select(cb.count(root.get(Operation_.id)));
 
         return session.createQuery(query).getResultList().get(0);
