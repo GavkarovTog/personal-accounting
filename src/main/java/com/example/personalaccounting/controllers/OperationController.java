@@ -132,9 +132,11 @@ public class OperationController {
         }
 
         long countOfFilteredOperation = getFilteredOperationsCount(operationFilters);
-        int totalPagesCount = (int) Math.ceil((double) countOfFilteredOperation / pageSize);
+        int totalPagesCount = (int) countOfFilteredOperation / pageSize;
+        totalPagesCount += countOfFilteredOperation % pageSize > 0 ? 1 : 0;
         int leftmostPageNumber = Math.max(currentPage - 2, 0);
         int rightmostPageNumber = Math.min(leftmostPageNumber + 4, totalPagesCount - 1);
+        leftmostPageNumber = Math.max(rightmostPageNumber - 4, 0);
 
         String params = UriComponentsBuilder
             .fromUri(URI.create(httpRequest.getRequestURI()))
@@ -142,9 +144,7 @@ public class OperationController {
             .replaceQueryParam("currentPage")
             .build(false).getQuery();
 
-        System.out.println(params);
-
-        Model.addAttribute("urlParameters", params);
+        Model.addAttribute("urlParameters", params == null ? "" : params);
         Model.addAttribute("operations", getFilteredOperations(operationFilters, currentPage));
         Model.addAttribute("operationFilters", operationFilters);
         Model.addAttribute("currentPage", currentPage);
@@ -495,7 +495,7 @@ public class OperationController {
             )
         );
 
-        query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.asc(root.get(Operation_.id)));
+        query.orderBy(cb.desc(root.get(Operation_.dateMade)), cb.desc(root.get(Operation_.id)));
 
         Page page = Page.page(15, currentPage);
         return session.createQuery(query).setPage(page).getResultList();
