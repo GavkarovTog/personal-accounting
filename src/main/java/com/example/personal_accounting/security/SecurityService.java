@@ -23,6 +23,7 @@ public class SecurityService {
         UserDetails userDetails = User.builder()
             .username(username)
             .password(passwordEncoder.encode(password))
+            .roles("USER")
             .build();
 
         userDetailsManager.createUser(userDetails);

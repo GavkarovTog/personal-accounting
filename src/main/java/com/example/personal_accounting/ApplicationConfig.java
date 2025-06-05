@@ -6,13 +6,11 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,7 +31,8 @@ public class ApplicationConfig {
                 .requestMatchers("/css/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(login -> login.loginPage("/login"));
+            .formLogin(login -> login.loginPage("/login"))
+            .requestCache(requestCache -> requestCache.disable());
 
         return http.build();
     }
