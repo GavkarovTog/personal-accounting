@@ -9,24 +9,28 @@
 </head>
 
 <body>
-    <form method="post" th:action="@{/login}" th:object="${loginForm}" class="reg-form">
+    <header>
         <h1>Login</h1>
-        <div class="input-block">
-            <h3>Username</h3>
-            <input type="text" th:field="*{username}">
-            <h6 th:if="${param.error}">Wrong username or password</h6>
-            <h6 th:if="${! #fields.hasErrors('password')}" class="hidden">Error</h6>
-        </div>
+    </header>
 
-        <div class="input-block">
-            <h3>Password</h3>
-            <input type="password" th:field="*{password}">
-            <h6 th:errors="*{password}">Error</h6>  
-            <h6><a th:href="@{/register}">Not registered yet?</a></h6>
+    <form method="post" th:action="@{/login}" th:object="${loginForm}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block">
+                <h3>Username</h3>
+                <input type="text" th:field="*{username}">
+                <h6 class="error" th:if="${param.error}">Wrong username or password</h6>
+                <h6 th:if="${param.error == null}" class="hidden">Error</h6>
+            </div>
+
+            <div class="input-block">
+                <h3>Password</h3>
+                <input type="password" th:field="*{password}">
+                <h6><a th:href="@{/register}">Not registered yet?</a></h6>
+            </div>
         </div>
 
         <input class="confirm-button" type="submit" value="Sign on"></input>
-    </div>
+    </form>
 </body>
 
 </html>
