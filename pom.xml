@@ -29,6 +29,8 @@
 		<url />
 	</scm>
 	<properties>
+		<start-class>com.baeldung.ssl.HttpsEnabledApplication</start-class>
+
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
