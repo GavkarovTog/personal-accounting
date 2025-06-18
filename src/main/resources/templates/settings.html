@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Settings</h1>
+    </header>
+
+    <form method="post" th:action="@{/settings}" th:object="${userSettingsForm}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block">
+                <h3>Currency</h3>
+                <select th:field="*{currency}">
+                    <option th:value="null"></option>
+                    <option th:each="ccy: ${currencies}"
+                            th:value="${ccy.getCurrencyCode()}"
+                            th:text='${ccy.getCurrencyCode() + " - " + ccy.getDisplayName()}'
+                    ></option>
+                </select>
+                <h6 class="error" th:errors="*{currency}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('currency')}" class="hidden">Error</h6>
+            </div>
+
+            <div class="input-block">
+                <h3>Time & Region</h3>
+                <select th:field="*{timeZone}">
+                    <option th:value="null"></option>
+                    <option th:each="zone: ${zones}"
+                            th:value="${zone.zoneId.getId()}"
+                            th:text="${zone.displayRepr}"
+                    ></option>
+                </select>
+                <h6 class="error" th:errors="*{timeZone}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('timeZone')}" class="hidden">Error</h6>
+            </div>
+
+            <div class="input-block">
+                <h3>Date format</h3>
+                <select th:field="*{dateFormat}">
+                    <option th:value="null"></option>
+                    <option th:each="format: ${dateFormats}"
+                            th:value="${format.pattern}"
+                            th:text="${format.displayFormat}"
+                    ></option>
+                </select>
+
+                <h6 class="error" th:errors="*{dateFormat}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('dateFormat')}" class="hidden">Error</h6>
+            </div>
+        </div>
+
+        <input class="confirm-button" type="submit" value="Confirm"></input>
+    </form>
+</body>
+
+</html>

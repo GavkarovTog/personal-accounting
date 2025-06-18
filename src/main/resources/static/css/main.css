@@ -82,7 +82,7 @@ a:hover {
     margin-bottom: 10px;
 }
 
-.input-block > input {
+.input-block > input, .input-block > select {
     font-family: 'InriaSerif';
     border: none;
     background-color: #D9D9D9;

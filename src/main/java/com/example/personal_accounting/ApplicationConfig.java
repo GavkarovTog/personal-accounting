@@ -6,6 +6,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,10 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.context.annotation.SessionScope;
 
 import com.example.personal_accounting.security.SecurityService;
 import com.example.personal_accounting.security.validation.RegistrationFormValidator;
+import com.example.personal_accounting.settings.SettingsRedirectionFilter;
+import com.example.personal_accounting.settings.UserSettingsAwareAuthenticationSuccessHandler;
+import com.example.personal_accounting.settings.UserSettingsHolder;
 
 @Configuration
 @EnableWebSecurity
@@ -31,10 +37,24 @@ public class ApplicationConfig {
                 .requestMatchers("/css/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .formLogin(login -> login.loginPage("/login"))
-            .requestCache(requestCache -> requestCache.disable());
+            .formLogin(login -> 
+                login
+                    .loginPage("/login")
+                    .successHandler(userSettingsAwareAuthenticationSuccessHandler()))
+            .requestCache(requestCache -> requestCache.disable())
+            .addFilterAfter(settingsRedirectionFilter(), AuthorizationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public SettingsRedirectionFilter settingsRedirectionFilter() {
+        return new SettingsRedirectionFilter();
+    }
+
+    @Bean
+    public UserSettingsAwareAuthenticationSuccessHandler userSettingsAwareAuthenticationSuccessHandler() {
+        return new UserSettingsAwareAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -80,5 +100,11 @@ public class ApplicationConfig {
     @Bean
     public RegistrationFormValidator registrationFormValidator() {
         return new RegistrationFormValidator();
+    }
+
+    @SessionScope
+    @Bean
+    public UserSettingsHolder userSettingsHolder() {
+        return new UserSettingsHolder();
     }
 }

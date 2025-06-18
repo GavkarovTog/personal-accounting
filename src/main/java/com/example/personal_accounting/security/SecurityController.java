@@ -18,7 +18,7 @@ import jakarta.validation.Valid;
 
 @Controller
 public class SecurityController {
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SecurityService securityService;
