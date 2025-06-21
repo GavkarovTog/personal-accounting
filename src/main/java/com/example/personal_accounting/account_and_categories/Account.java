@@ -1,4 +1,4 @@
-package com.example.personal_accounting.category;
+package com.example.personal_accounting.account_and_categories;
 
 import java.math.BigDecimal;
 
@@ -9,24 +9,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "category")
-public class Category extends OperationMember {
-    private enum CategoryType {
-        Expense, Income
-    };
-    
+@Table(name = "account")
+public class Account extends OperationMember {
     private String name;
-
-    @Column(name = "category_type")
-    private CategoryType categoryType;
+    
+    @Column(name = "current_balance")
+    private BigDecimal currentBalance;
 
     @Override
     public void addToBalance(BigDecimal additive) {
-    
+        throw new UnsupportedOperationException("to implement");
     }
 
     @Override
     public void subtractFromBalance(BigDecimal subtractive) {
-    
+        throw new UnsupportedOperationException("to implement");
     }
 }

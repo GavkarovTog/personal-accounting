@@ -15,9 +15,16 @@ public class SettingsRedirectionFilter extends OncePerRequestFilter {
     @Autowired
     private UserSettingsHolder userSettingsHolder;
 
+    @Autowired
+    private UserSettingsService userSettingsService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        if (! userSettingsHolder.isInitialized()) {
+            userSettingsHolder.setUserSettings(userSettingsService.getCurrentUserSetup());
+        }
+        
         if (userSettingsHolder.hasSetup() || notRequireSetup(request)) {
             filterChain.doFilter(request, response);
         } else {

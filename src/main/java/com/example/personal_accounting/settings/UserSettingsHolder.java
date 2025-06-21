@@ -1,9 +1,8 @@
 package com.example.personal_accounting.settings;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 public class UserSettingsHolder {
     private UserSettings userSettings = null;
+    private boolean isInitialized = false;
 
     public boolean hasSetup() {
         return userSettings != null;
@@ -13,7 +12,12 @@ public class UserSettingsHolder {
         return userSettings;
     }
 
-    public void setUserSettings(@Autowired(required = false) UserSettings userSettings) {
+    public boolean isInitialized() {
+        return isInitialized;
+    }
+
+    public void setUserSettings(UserSettings userSettings) {
+        isInitialized = true;
         this.userSettings = userSettings;
     }
 }

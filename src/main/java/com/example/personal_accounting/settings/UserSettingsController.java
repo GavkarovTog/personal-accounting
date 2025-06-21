@@ -30,7 +30,12 @@ public class UserSettingsController {
 
     @GetMapping("/settings")
     public String settings(UserSettingsForm form, ZoneId userZoneId) {
-        if (userZoneId != null) {
+        if (userSettingsHolder.hasSetup()) {
+            UserSettings settings = userSettingsHolder.getUserSettings();
+            form.setCurrency(settings.getCurrency());
+            form.setTimeZone(settings.getTimeZone());
+            form.setDateFormat(settings.getDateFormat());
+        } else if (userZoneId != null) {
             form.setTimeZone(userZoneId.getId());
         }
 
