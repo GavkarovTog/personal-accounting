@@ -2,6 +2,7 @@ package com.example.personal_accounting.shared_entities;
 
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ import jakarta.persistence.Table;
 abstract public class OperationMember {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "operation_member_id")
     private long id;
 
     abstract public void addToBalance(BigDecimal additive);

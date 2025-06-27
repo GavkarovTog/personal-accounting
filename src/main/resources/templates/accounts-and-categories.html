@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu</title>
+    <link rel="stylesheet" href="/css/main.css" type="text/css">
+</head>
+
+<body>
+    <header class="nav-menu">
+        <div class="nav-menu-block">
+            <a th:href="@{/}">To Menu</a>
+            <a th:href="@{/settings}">Settings</a>
+        </div>
+        <h1 class="small-header">Accounts & Categories</h1>
+        <div class="nav-menu-block">
+            <p>You are <span class="bold" th:text="${username}"></span></p>
+            <form method="POST" th:action="@{/logout}">
+                <input class="button-reference" type="submit" value="Log out">
+            </form>
+        </div>
+    </header>
+    <div class="account-and-categories">
+        <div class="accounts">
+            <h2>Accounts</h2>
+            <table class="account-entries">
+                <tr class="account-entry" th:each="account: ${accounts}">
+                    <td><a class="account-link" th:href="/account/edit/*{id}">
+                            <div th:value="*{name}">Account</div>
+                        </a></td>
+                    <td class="account-balance financial" th:value="*{currentBalance}">UZS 153.42</td>
+                    <td><a th:href="/account/delete/*{id}" class="material-icons">delete</a></td>
+                </tr>
+
+                <tr class="account-creation-entry">
+                    <td><a th:href="@{/accounts-and-categories/create}">Create account</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="categories">
+            <div class="categories-block">
+                <h2>Income categories</h2>
+                <div class="category-entries">
+                    <div>
+                        <div class="category-entry" th:each="income: ${incomes}">
+                            <a th:href="@{/category/edit/*{id}}"><div th:value="*{name}">Category</div></a>
+                            <a th:href="@{/category/delete/*{id}}" class="material-icons">delete</a>
+                        </div>
+                        
+                        <div class="category-creation-entry">
+                            <a><div>Add</div></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="categories-block">
+                <h2>Expense categories</h2>
+                <div class="category-entries">
+                    <div>
+                        <div class="category-entry" th:each="expense: ${expenses}">
+                            <a th:href="@{/category/edit/*{id}}"><div th:value="*{name}">Category</div></a>
+                            <a th:href="@{/category/delete/*{id}}" class="material-icons">delete</a>
+                        </div>
+
+                        <div class="category-creation-entry">
+                            <a><div>Add</div></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const financialElements = document.getElementsByClassName("financial");
+        for (let i = 0; i < financialElements.length; i++) {
+            const elementContent = financialElements[i].innerHTML;
+            const currency = elementContent.split(" ")[0];
+            const amount = elementContent.split(" ")[1];
+
+            financialElements[i].innerHTML = Intl.NumberFormat(new Intl.Locale(navigator.language), { style: "currency", currency: currency }).format(amount);
+        }
+    </script>
+</body>
+
+</html>

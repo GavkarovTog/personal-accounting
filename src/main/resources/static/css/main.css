@@ -8,6 +8,38 @@
     src: url("./fonts/InriaSerif-Bold.ttf");
 }
 
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/MaterialIcons-Regular.ttf'),
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
 * {
     margin: 0;
     outline: 0;
@@ -29,7 +61,7 @@ header {
 }
 
 h1 {
-    font-family: 'InriaSerif';
+    font-family: 'InriaSerif-Bold';
     font-weight: normal;
     font-size: 64px;
 }
@@ -67,7 +99,7 @@ a:hover {
 }
 
 .nav-menu > h1 {
-    width: 20%;
+    width: 30%;
 }
 
 .nav-menu > h1 {
@@ -133,6 +165,10 @@ a:hover {
 
 .button-reference:hover {
     color: #651010;
+}
+
+.small-header {
+    font-size: 40px;
 }
 
 .bold {
@@ -204,4 +240,185 @@ a:hover {
 
 .hidden {
     visibility: hidden;
+}
+
+.account-and-categories {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.account-and-categories > div {
+    width: 100%;
+    height: 100%;
+}
+
+.accounts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
+}
+
+.account-entries {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.account-entry {
+    width: 70%;
+    display: flex;
+    margin: 10px;
+    justify-content: space-between;
+}
+
+.account-entry > * {
+    width: 100%;
+    border: 1px solid black;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-balance {
+    width: 30%;
+}
+
+.account-entry > *:first-child {
+    padding: 0px;
+}
+
+.account-link {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.account-link > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding-left: 5px;
+    align-items: center;
+}
+
+.account-entry > *:last-child {
+    width: 20%;
+    padding: 0;
+}
+
+.account-entry > td:last-child > a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+
+.account-creation-entry {
+    margin: 10px;
+    width: 70%;
+    background-color: #443030;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-creation-entry > td {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+}
+
+.account-creation-entry > td > a {
+    width: 100%;
+    height: 100%;
+    color: #FFFFFF;
+    display: block;
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.categories {
+    display: flex;
+    flex-direction: column;
+}
+
+.categories-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.categories-block:last-child {
+    margin-top: 10px;
+}
+
+.category-entries {
+    height: 100%;
+    width: 100%;
+}
+
+.category-entries > div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.category-entry {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    height: 30px;
+}
+
+.category-entry > * {
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid black;
+}
+
+.category-entry > a > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-entry > .material-icons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.category-creation-entry {
+    height: 30px;
+    padding: 5px;
+}
+
+.category-creation-entry > a {
+    border: 1px solid black;
+    height: 28.4px;
+    display: block;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.category-creation-entry > a > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

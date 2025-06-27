@@ -1,4 +1,4 @@
-package com.example.personal_accounting.account_and_categories;
+package com.example.personal_accounting.accounts_and_categories;
 
 import java.math.BigDecimal;
 
@@ -6,10 +6,14 @@ import com.example.personal_accounting.shared_entities.OperationMember;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "category")
+@PrimaryKeyJoinColumn(name = "category_id")
 public class Category extends OperationMember {
     private enum CategoryType {
         Expense, Income
@@ -17,6 +21,7 @@ public class Category extends OperationMember {
     
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category_type")
     private CategoryType categoryType;
 
@@ -28,5 +33,21 @@ public class Category extends OperationMember {
     @Override
     public void subtractFromBalance(BigDecimal subtractive) {
     
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public CategoryType getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(CategoryType categoryType) {
+        this.categoryType = categoryType;
     }
 }
