@@ -61,7 +61,7 @@ header {
 }
 
 h1 {
-    font-family: 'InriaSerif-Bold';
+    font-family: 'InriaSerif';
     font-weight: normal;
     font-size: 64px;
 }
@@ -287,7 +287,7 @@ a:hover {
 }
 
 .account-balance {
-    width: 30%;
+    width: 60%;
 }
 
 .account-entry > *:first-child {
@@ -421,4 +421,37 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.buttons-group > * {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.ref-button {
+    border: 1px solid black;
+    font-family: 'InriaSerif';
+    font-weight: normal;
+    padding: 15px 40px;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.ref-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.warning-block {
+    width: 40%;
+
+}
+
+.warning {
+    color: #A20000;
+    font-size: 24px;
+    text-align: center;
+}
+
+.warning-button {
+    background-color: #651010
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Create account</h1>
+    </header>
+
+    <form method="post" th:action="@{/account/create}" th:object="${accountCreationForm}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block">
+                <h3>Account name</h3>
+                <input type="text" th:field="*{name}">
+                <h6 class="error" th:errors="*{name}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('name')}" class="hidden">Error</h6>
+            </div>
+
+            <div class="input-block">
+                <h3>Start balance</h3>
+                <input type="number" step="0.00000001" th:field="*{startBalance}">
+                <h6 class="error" th:errors="*{startBalance}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('startBalance')}" class="hidden">Error</h6>
+            </div>
+        </div>
+
+        <div class="buttons-group">
+            <a th:href="@{/accounts-and-categories}" class="ref-button">Cancel</a>
+            <input class="confirm-button" type="submit" value="Create"></input>
+        </div>
+    </form>
+</body>
+
+</html>

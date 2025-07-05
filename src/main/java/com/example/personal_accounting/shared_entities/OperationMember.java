@@ -16,11 +16,19 @@ import jakarta.persistence.Table;
 @Table(name = "operation_member")
 abstract public class OperationMember {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "operation_member_seq")
     @Column(name = "operation_member_id")
     private long id;
 
     abstract public void addToBalance(BigDecimal additive);
 
     abstract public void subtractFromBalance(BigDecimal subtractive);
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

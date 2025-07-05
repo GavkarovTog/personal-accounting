@@ -27,15 +27,15 @@
             <h2>Accounts</h2>
             <table class="account-entries">
                 <tr class="account-entry" th:each="account: ${accounts}">
-                    <td><a class="account-link" th:href="/account/edit/*{id}">
-                            <div th:value="*{name}">Account</div>
+                    <td><a class="account-link" th:href="@{/account/edit/{accountId}(accountId=${account.getId()})}">
+                            <div th:text="${account.name}">Account</div>
                         </a></td>
-                    <td class="account-balance financial" th:value="*{currentBalance}">UZS 153.42</td>
-                    <td><a th:href="/account/delete/*{id}" class="material-icons">delete</a></td>
+                    <td class="account-balance financial" th:text="|${currency} ${account.currentBalance}|">UZS 153.42</td>
+                    <td><a th:href="@{/account/delete/{accountId}(accountId=${account.getId()})}" class="material-icons">delete</a></td>
                 </tr>
 
                 <tr class="account-creation-entry">
-                    <td><a th:href="@{/accounts-and-categories/create}">Create account</a></td>
+                    <td><a th:href="@{/account/create}">Create account</a></td>
                 </tr>
             </table>
         </div>

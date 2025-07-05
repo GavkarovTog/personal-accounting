@@ -6,9 +6,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +18,9 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.annotation.SessionScope;
 
+import com.example.personal_accounting.accounts_and_categories.account.dto.AccountEditionForm;
+import com.example.personal_accounting.accounts_and_categories.account.validation.AccountCreationFormValidator;
+import com.example.personal_accounting.accounts_and_categories.account.validation.AccountEditionFormValidator;
 import com.example.personal_accounting.security.SecurityService;
 import com.example.personal_accounting.security.validation.RegistrationFormValidator;
 import com.example.personal_accounting.settings.SettingsRedirectionFilter;
@@ -101,6 +102,16 @@ public class ApplicationConfig {
     @Bean
     public RegistrationFormValidator registrationFormValidator() {
         return new RegistrationFormValidator();
+    }
+
+    @Bean
+    public AccountCreationFormValidator accountCreationFormValidator() {
+        return new AccountCreationFormValidator();
+    }
+
+    @Bean
+    public AccountEditionFormValidator accountEditionFormValidator() {
+        return new AccountEditionFormValidator();
     }
 
     @SessionScope

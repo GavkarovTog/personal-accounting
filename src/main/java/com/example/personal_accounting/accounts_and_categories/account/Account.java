@@ -1,4 +1,4 @@
-package com.example.personal_accounting.accounts_and_categories;
+package com.example.personal_accounting.accounts_and_categories.account;
 
 import java.math.BigDecimal;
 
