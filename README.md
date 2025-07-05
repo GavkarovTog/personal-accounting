@@ -19,8 +19,8 @@ For this application I'm planning to:
 2) application to be deployed on external Internet so I will learn how to deploy application with https configuration and others;
 
 Here are some screens of application:
-![image](https://github.com/user-attachments/assets/f58c7f80-255a-4ba8-b019-857bc7fa78a2)
+![image](https://github.com/user-attachments/assets/ef953c1b-8bf0-49a3-aaa2-d3f849e3df2c)
 
 ![image](https://github.com/user-attachments/assets/61d7815f-337e-464d-98c3-08587d3fd407)
 
-![image](https://github.com/user-attachments/assets/39dd72cc-a043-456a-bf3b-df384fec3789)
+![image](https://github.com/user-attachments/assets/e2dc1eff-d891-440d-b1f9-c6ac18d91b0c)
