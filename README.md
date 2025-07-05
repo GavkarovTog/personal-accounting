@@ -17,3 +17,10 @@ In older version I used the same technologies as now, but I move forward in idea
 For this application I'm planning to:
 1) have some analytics with filtration on operation type, category and accounnts;
 2) application to be deployed on external Internet so I will learn how to deploy application with https configuration and others;
+
+Here are some screens of application:
+![image](https://github.com/user-attachments/assets/f58c7f80-255a-4ba8-b019-857bc7fa78a2)
+
+![image](https://github.com/user-attachments/assets/61d7815f-337e-464d-98c3-08587d3fd407)
+
+![image](https://github.com/user-attachments/assets/39dd72cc-a043-456a-bf3b-df384fec3789)
