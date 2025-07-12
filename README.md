@@ -16,7 +16,7 @@ In older version I used the same technologies as now, but I move forward in idea
 
 For this application I'm planning to:
 1) have some analytics with filtration on operation types, categories and accounts;
-2) application to be deployed on external Internet so I will learn how to deploy application with https configuration and others;
+2) application to be deployed on external Internet so I will learn how to deploy application with https configuration and others.
 
 Here are some screens of application:
 ![image](https://github.com/user-attachments/assets/ef953c1b-8bf0-49a3-aaa2-d3f849e3df2c)
