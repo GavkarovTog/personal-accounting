@@ -8,7 +8,7 @@ In older version I used the same technologies as now, but I move forward in idea
 1) Multiple users;
 2) Implemented authentication and authorization: registration, login and logout processing;
 3) I use session scope bean to contain current user settings in RAM, use validator beans to validate forms, so I'm getting more acquainted with Spring IOC container;
-4) I use filter to redirect user to settings page after registration and login, so I'm getting more acquainted with Spring Security architecture;
+4) I use filter to redirect user to settings page after registration and login(if he doesn't have setup already), so I'm getting more acquainted with Spring Security architecture;
 5) I manually create schema for database instead of automatic Hibernate generation to understand ORM better;
 6) I use not only HTML, but CSS and some JavaScript(HTML content is now populated on server-side, but in next project iteration I'm planning to use react);
 7) I use Hibernate entity inheritance to treat accounts and categories the same way since in old project I learnt that it would be better if categories were like accounts with zero balance for operation processing;
