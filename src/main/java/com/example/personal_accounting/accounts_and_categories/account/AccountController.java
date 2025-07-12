@@ -18,19 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.personal_accounting.accounts_and_categories.account.dto.AccountCreationForm;
-import com.example.personal_accounting.accounts_and_categories.account.dto.AccountDeletionForm;
 import com.example.personal_accounting.accounts_and_categories.account.dto.AccountEditionForm;
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountCreationFormValidator;
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountEditionFormValidator;
-import com.example.personal_accounting.settings.UserSettingsService;
 
 @RequestMapping(path = "/account")
 @Controller
 public class AccountController {
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private UserSettingsService userSettingsService;
 
     @Autowired
     private AccountService accountService;

@@ -12,7 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class UserSettingsAwareAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class UserDataInitializingAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -22,7 +22,7 @@ public class UserSettingsAwareAuthenticationSuccessHandler extends SimpleUrlAuth
     @Autowired
     private UserSettingsService userSettingsService;
 
-    public UserSettingsAwareAuthenticationSuccessHandler() {
+    public UserDataInitializingAuthenticationSuccessHandler() {
         super("/");
     }
 

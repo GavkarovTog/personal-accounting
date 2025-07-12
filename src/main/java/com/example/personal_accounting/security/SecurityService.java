@@ -7,10 +7,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import com.example.personal_accounting.user_specific.UserNumberService;
+
 @Service
 public class SecurityService {
     @Autowired
     private UserDetailsManager userDetailsManager;
+
+    @Autowired
+    private UserNumberService userNumberService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,5 +32,7 @@ public class SecurityService {
             .build();
 
         userDetailsManager.createUser(userDetails);
+
+        userNumberService.createUserNumberFor(username);
     }
 }

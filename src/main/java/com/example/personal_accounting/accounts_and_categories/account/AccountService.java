@@ -5,16 +5,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.personal_accounting.user_specific.UserNumber;
+import com.example.personal_accounting.user_specific.UserNumberService;
 
 @Service
 public class AccountService {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private UserNumberService userNumberService;
+
     public boolean suchAccountExists(String accountName) {
-        return accountRepository.existsByName(accountName);
+        return accountRepository.existsByNameAndUserNumber(accountName, userNumberService.getCurrentUserNumber());
     }
 
     public void createAccount(String name, BigDecimal startBalance) {
@@ -22,18 +33,21 @@ public class AccountService {
         account.setName(name);
         account.setCurrentBalance(startBalance);
 
+        UserNumber userNumber = userNumberService.getCurrentUserNumber();
+        account.setUserNumber(userNumber);
+
         accountRepository.save(account);
     }
 
     public List<Account> getAllAccounts() {
         List<Account> accounts = new ArrayList<>();
-        accountRepository.findAll().forEach(accounts::add);
+        accountRepository.findAllByUserNumber(userNumberService.getCurrentUserNumber()).forEach(accounts::add);
 
         return accounts;
     }
 
     public Optional<Account> getAccount(long id) {
-        return accountRepository.findById(id);
+        return accountRepository.findByIdAndUserNumber(id, userNumberService.getCurrentUserNumber());
     }
 
     public void renameAccount(long id, String newName) {
@@ -43,7 +57,8 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    @Transactional
     public void deleteAccount(long id) {
-        accountRepository.deleteById(id);
+        accountRepository.deleteByIdAndUserNumber(id, userNumberService.getCurrentUserNumber());
     }
 }

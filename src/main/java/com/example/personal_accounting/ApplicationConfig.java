@@ -18,14 +18,14 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.annotation.SessionScope;
 
-import com.example.personal_accounting.accounts_and_categories.account.dto.AccountEditionForm;
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountCreationFormValidator;
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountEditionFormValidator;
 import com.example.personal_accounting.security.SecurityService;
 import com.example.personal_accounting.security.validation.RegistrationFormValidator;
 import com.example.personal_accounting.settings.SettingsRedirectionFilter;
-import com.example.personal_accounting.settings.UserSettingsAwareAuthenticationSuccessHandler;
+import com.example.personal_accounting.settings.UserDataInitializingAuthenticationSuccessHandler;
 import com.example.personal_accounting.settings.UserSettingsHolder;
+import com.example.personal_accounting.user_specific.UserNumber;
 
 @Configuration
 @EnableWebSecurity
@@ -55,8 +55,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public UserSettingsAwareAuthenticationSuccessHandler userSettingsAwareAuthenticationSuccessHandler() {
-        return new UserSettingsAwareAuthenticationSuccessHandler();
+    public UserDataInitializingAuthenticationSuccessHandler userSettingsAwareAuthenticationSuccessHandler() {
+        return new UserDataInitializingAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -118,5 +118,11 @@ public class ApplicationConfig {
     @Bean
     public UserSettingsHolder userSettingsHolder() {
         return new UserSettingsHolder();
+    }
+
+    @SessionScope
+    @Bean
+    public UserNumber userNumber() {
+        return new UserNumber();
     }
 }
