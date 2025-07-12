@@ -1,5 +1,5 @@
 In this project I aim to create multi-user application for personal incomes and expenses accounting. 
-Application must allow user to manage accounts, expense and income categories, operations on accounts for categories.
+Application must allow user to manage accounts, expense/income categories and operations on accounts.
 This project is for learning purposes and uses such technologies as Spring framework, Spring boot, Spring Security, Spring Data JPA, Hibernate and PostgreSQL.
 
 Personal accounting application is under development right now and it is newer version of old archived personal accounting application that I developed earlier: https://github.com/GavkarovTog/personal-accounting-deprecated
