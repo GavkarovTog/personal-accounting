@@ -1,4 +1,4 @@
-In this projects I aim to create multi-user application for personal incomes and expenses accounting. 
+In this project I aim to create multi-user application for personal incomes and expenses accounting. 
 Application must allow user to manage accounts, expense and income categories, operations on accounts for categories.
 This project is for learning purposes and uses such technologies as Spring framework, Spring boot, Spring Security, Spring Data JPA, Hibernate and PostgreSQL.
 
