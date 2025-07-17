@@ -1,4 +1,4 @@
-package com.example.personal_accounting.accounts_and_categories;
+package com.example.personal_accounting.accounts_and_categories.category;
 
 import java.math.BigDecimal;
 
@@ -15,10 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "category")
 @PrimaryKeyJoinColumn(name = "category_id")
 public class Category extends OperationMember {
-    private enum CategoryType {
-        Expense, Income
-    };
-    
+
     private String name;
 
     @Enumerated(EnumType.STRING)

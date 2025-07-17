@@ -20,6 +20,8 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountCreationFormValidator;
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountEditionFormValidator;
+import com.example.personal_accounting.accounts_and_categories.category.validation.CategoryCreationFormValidator;
+import com.example.personal_accounting.accounts_and_categories.category.validation.CategoryEditionFormValidator;
 import com.example.personal_accounting.security.SecurityService;
 import com.example.personal_accounting.security.validation.RegistrationFormValidator;
 import com.example.personal_accounting.settings.SettingsRedirectionFilter;
@@ -124,5 +126,15 @@ public class ApplicationConfig {
     @Bean
     public UserNumber userNumber() {
         return new UserNumber();
+    }
+
+    @Bean
+    public CategoryCreationFormValidator categoryCreationFormValidator() {
+        return new CategoryCreationFormValidator();
+    }
+
+    @Bean
+    public CategoryEditionFormValidator categoryEditionFormValidator() {
+        return new CategoryEditionFormValidator();
     }
 }

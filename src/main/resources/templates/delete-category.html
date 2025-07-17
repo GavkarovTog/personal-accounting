@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete category</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Delete category</h1>
+    </header>
+
+    <form method="post" th:action="@{''}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block warning-block">
+                <h6 class="warning">
+                    <p th:text="|Are you sure you want to delete category - “${categoryName}”?|"></p>
+                    <br>
+                    <p>This action is irreversible and will cause all operations with such category be erased</p>
+                </h6>
+            </div>
+        </div>
+
+        <div class="buttons-group">
+            <a th:href="@{/accounts-and-categories}" class="ref-button">Cancel</a>
+            <input class="confirm-button warning-button" type="submit" value="Confirm"></input>
+        </div>
+    </form>
+</body>
+
+</html>

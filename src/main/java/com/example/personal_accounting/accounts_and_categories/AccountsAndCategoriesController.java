@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.personal_accounting.accounts_and_categories.account.Account;
 import com.example.personal_accounting.accounts_and_categories.account.AccountService;
+import com.example.personal_accounting.accounts_and_categories.category.Category;
+import com.example.personal_accounting.accounts_and_categories.category.CategoryService;
 import com.example.personal_accounting.settings.UserSettingsService;
 
 @Controller
@@ -24,6 +26,8 @@ public class AccountsAndCategoriesController {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/accounts-and-categories")
     public String accountsAndCategories(Model model) {
@@ -42,13 +46,13 @@ public class AccountsAndCategoriesController {
         return accountService.getAllAccounts();
     }
 
-    @ModelAttribute("expenses")
-    public List<Category> expenses() {
-        return List.of();
-    }
-
     @ModelAttribute("incomes")
     public List<Category> incomes() {
-        return List.of();
+        return categoryService.getAllIncomes();
+    }
+
+    @ModelAttribute("expenses")
+    public List<Category> expenses() {
+        return categoryService.getAllExpenses();
     }
 }

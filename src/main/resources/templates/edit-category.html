@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit category</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Edit category</h1>
+    </header>
+
+    <form method="post" th:action="@{/category/edit}" th:object="${categoryEditionForm}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block">
+                <h3>Category name</h3>
+                <input type="text" th:field="*{name}">
+                <h6 class="error" th:errors="*{name}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('name')}" class="hidden">Error</h6>
+            </div>
+        </div>
+
+        <input style="display: none;" th:field="*{id}">
+
+        <div class="buttons-group">
+            <a th:href="@{/accounts-and-categories}" class="ref-button">Cancel</a>
+            <input class="confirm-button" type="submit" value="Confirm"></input>
+        </div>
+    </form>
+</body>
+
+</html>

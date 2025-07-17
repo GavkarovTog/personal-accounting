@@ -45,12 +45,12 @@
                 <div class="category-entries">
                     <div>
                         <div class="category-entry" th:each="income: ${incomes}">
-                            <a th:href="@{/category/edit/*{id}}"><div th:value="*{name}">Category</div></a>
-                            <a th:href="@{/category/delete/*{id}}" class="material-icons">delete</a>
+                            <a th:href="@{/category/edit/{id}(id = ${income.id})}"><div th:text="${income.name}">Category</div></a>
+                            <a th:href="@{/category/delete/{id}(id = ${income.id})}" class="material-icons">delete</a>
                         </div>
                         
                         <div class="category-creation-entry">
-                            <a><div>Add</div></a>
+                            <a th:href="@{/category/create?category-type=income}"><div>Add</div></a>
                         </div>
                     </div>
                 </div>
@@ -60,12 +60,12 @@
                 <div class="category-entries">
                     <div>
                         <div class="category-entry" th:each="expense: ${expenses}">
-                            <a th:href="@{/category/edit/*{id}}"><div th:value="*{name}">Category</div></a>
-                            <a th:href="@{/category/delete/*{id}}" class="material-icons">delete</a>
+                            <a th:href="@{/category/edit/{id}(id = ${expense.id})}"><div th:text="${expense.name}">Category</div></a>
+                            <a th:href="@{/category/delete/{id}(id = ${expense.id})}" class="material-icons">delete</a>
                         </div>
 
                         <div class="category-creation-entry">
-                            <a><div>Add</div></a>
+                            <a th:href="@{/category/create?category-type=expense}"><div>Add</div></a>
                         </div>
                     </div>
                 </div>
