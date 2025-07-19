@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations</title>
+    <link rel="stylesheet" href="/css/main.css" type="text/css">
+</head>
+
+<body>
+    <header class="nav-menu">
+        <div class="nav-menu-block">
+            <a th:href="@{/}">To Menu</a>
+            <a th:href="@{/settings}">Settings</a>
+        </div>
+        <h1 class="small-header">Operations</h1>
+        <div class="nav-menu-block">
+            <p>You are <span class="bold" th:text="${username}"></span></p>
+            <form method="POST" th:action="@{/logout}">
+                <input class="button-reference" type="submit" value="Log out">
+            </form>
+        </div>
+    </header>
+    <div class="operations-container">
+        <div class="operations">
+            <div class="period">Period</div>
+
+            <div class="operation-entries">
+                <a class="operation-creation-entry" href="">Create new operation</a>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+                <div class="operation">
+                    <a class="operation-ref">
+                        <div class="operation-date">Date</div>
+                        <div class="operation-accounts">
+                            <div>From</div>
+                            <div>To</div>
+                        </div>
+                        <div class="operation-amount financial">UZS 123</div>
+                    </a>
+                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                </div>
+            </div>
+
+            <div class="pages">
+                <a href="">1</a>
+                <a href="">2</a>
+                <a href="">3</a>
+                <a href="">4</a>
+                <a href="">5</a>
+            </div>
+        </div>
+        <form class="filters" th:method="get" th:action="@{''}">
+            <div class="filter-blocks">
+                <div class="filter-block">
+                    <h2>Period</h2>
+                    <div class="filter-entries">
+                        <div class="filter-entry">
+                            <input class="filter-radio" type="radio" name="" id="">
+                            <label for="">Day</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-radio" type="radio" name="" id="">
+                            <label for="">Week</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-radio" type="radio" name="" id="">
+                            <label for="">Month</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-block">
+                    <h2>Operation type</h2>
+                    <div class="filter-entries">
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Income</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Expense</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Transfer</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-block">
+                    <h2>Account</h2>
+                    <div class="filter-entries">
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Account #1</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Account #1</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Account #1</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-block">
+                    <h2>Categories</h2>
+                    <div class="filter-entries">
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Category #1</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Category #1</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Category #1</label>
+                        </div>
+                        <div class="filter-entry">
+                            <input class="filter-checkbox" type="checkbox" name="" id="">
+                            <label for="">Category #1</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="buttons-group">
+                <a class="ref-button cancel-button">Reset</a>
+                <input class="confirm-button" type="submit" value="Confirm"></input>
+            </div>
+        </form>
+    </div>
+    <script>
+        const financialElements = document.getElementsByClassName("financial");
+        for (let i = 0; i < financialElements.length; i++) {
+            const elementContent = financialElements[i].innerHTML;
+            const currency = elementContent.split(" ")[0];
+            const amount = elementContent.split(" ")[1];
+
+            financialElements[i].innerHTML = Intl.NumberFormat(new Intl.Locale(navigator.language), { style: "currency", currency: currency }).format(amount);
+        }
+
+        const cancelButton = document.getElementsByClassName("cancel-button")[0];
+        cancelButton.addEventListener("click", () => {
+            const checkboxes = document.getElementsByClassName("filter-checkbox");
+            for (let i = 0; i < checkboxes.length; i ++) {
+                const checkbox = checkboxes[i];
+                checkbox.checked = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
