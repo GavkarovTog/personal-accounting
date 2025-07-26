@@ -22,6 +22,7 @@ import com.example.personal_accounting.accounts_and_categories.account.validatio
 import com.example.personal_accounting.accounts_and_categories.account.validation.AccountEditionFormValidator;
 import com.example.personal_accounting.accounts_and_categories.category.validation.CategoryCreationFormValidator;
 import com.example.personal_accounting.accounts_and_categories.category.validation.CategoryEditionFormValidator;
+import com.example.personal_accounting.operation.validation.OperationValidator;
 import com.example.personal_accounting.security.SecurityService;
 import com.example.personal_accounting.security.validation.RegistrationFormValidator;
 import com.example.personal_accounting.settings.SettingsRedirectionFilter;
@@ -136,5 +137,10 @@ public class ApplicationConfig {
     @Bean
     public CategoryEditionFormValidator categoryEditionFormValidator() {
         return new CategoryEditionFormValidator();
+    }
+
+    @Bean
+    public OperationValidator operationValidator() {
+        return new OperationValidator();
     }
 }

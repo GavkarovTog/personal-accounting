@@ -32,6 +32,11 @@ public class Category extends OperationMember {
     
     }
 
+    @Override
+    public BigDecimal getBalance() {
+        return BigDecimal.ZERO;
+    }
+
     public String getName() {
         return name;
     }

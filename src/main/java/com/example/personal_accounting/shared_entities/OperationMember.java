@@ -33,6 +33,8 @@ abstract public class OperationMember {
 
     abstract public void subtractFromBalance(BigDecimal subtractive);
 
+    abstract public BigDecimal getBalance();
+
     public long getId() {
         return id;
     }

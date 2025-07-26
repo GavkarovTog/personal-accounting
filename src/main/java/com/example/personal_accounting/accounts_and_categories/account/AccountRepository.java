@@ -11,7 +11,7 @@ import com.example.personal_accounting.user_specific.UserNumber;
 public interface AccountRepository extends CrudRepository<Account, Long> {
     public boolean existsByNameAndUserNumber(String name, UserNumber userNumber);
 
-    public List<Account> findAllByUserNumber(UserNumber userNumber);
+    public List<Account> findAllByUserNumberOrderById(UserNumber userNumber);
 
     public Optional<Account> findByIdAndUserNumber(Long id, UserNumber userNumber);
 

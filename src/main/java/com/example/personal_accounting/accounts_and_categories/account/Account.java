@@ -2,12 +2,16 @@ package com.example.personal_accounting.accounts_and_categories.account;
 
 import java.math.BigDecimal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.example.personal_accounting.shared_entities.OperationMember;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "account")
@@ -20,12 +24,17 @@ public class Account extends OperationMember {
 
     @Override
     public void addToBalance(BigDecimal additive) {
-        currentBalance.add(additive);
+        currentBalance = currentBalance.add(additive);
     }
 
     @Override
     public void subtractFromBalance(BigDecimal subtractive) {
-        currentBalance.add(subtractive);
+        currentBalance = currentBalance.subtract(subtractive);
+    }
+
+    @Override
+    public BigDecimal getBalance() {
+        return currentBalance;
     }
 
     public String getName() {
@@ -36,11 +45,11 @@ public class Account extends OperationMember {
         this.name = name;
     }
 
-    public BigDecimal getCurrentBalance() {
-        return currentBalance;
-    }
-
     public void setCurrentBalance(BigDecimal currentBalance) {
         this.currentBalance = currentBalance;
+    }
+
+    public BigDecimal getCurrentBalance() {
+        return currentBalance;
     }
 }

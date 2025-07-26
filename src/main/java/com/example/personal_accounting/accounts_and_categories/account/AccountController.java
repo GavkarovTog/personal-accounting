@@ -38,8 +38,7 @@ public class AccountController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        binder.addValidators(accountCreationFormValidator);
-        binder.addValidators(accountEditionFormValidator);
+        binder.addValidators(accountCreationFormValidator, accountEditionFormValidator);
     }
 
     @GetMapping("/create")

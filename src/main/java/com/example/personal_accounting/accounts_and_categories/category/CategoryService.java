@@ -28,11 +28,11 @@ public class CategoryService {
     }
 
     public List<Category> getAllIncomes() {
-        return categoryRepository.findAllByCategoryTypeAndUserNumber(CategoryType.Income, userNumberService.getCurrentUserNumber());
+        return categoryRepository.findAllByCategoryTypeAndUserNumberOrderById(CategoryType.Income, userNumberService.getCurrentUserNumber());
     }
 
     public List<Category> getAllExpenses() {
-        return categoryRepository.findAllByCategoryTypeAndUserNumber(CategoryType.Expense, userNumberService.getCurrentUserNumber());
+        return categoryRepository.findAllByCategoryTypeAndUserNumberOrderById(CategoryType.Expense, userNumberService.getCurrentUserNumber());
     }
 
     public boolean suchCategoryExists(String name) {

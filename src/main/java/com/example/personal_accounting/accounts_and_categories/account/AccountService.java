@@ -41,7 +41,7 @@ public class AccountService {
 
     public List<Account> getAllAccounts() {
         List<Account> accounts = new ArrayList<>();
-        accountRepository.findAllByUserNumber(userNumberService.getCurrentUserNumber()).forEach(accounts::add);
+        accountRepository.findAllByUserNumberOrderById(userNumberService.getCurrentUserNumber()).forEach(accounts::add);
 
         return accounts;
     }
