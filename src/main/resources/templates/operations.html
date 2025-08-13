@@ -28,116 +28,16 @@
 
             <div class="operation-entries">
                 <a class="operation-creation-entry" th:href="@{/operation/create}">Create new operation</a>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
+                <div class="operation" th:each="operation: ${operations}">
+                    <a class="operation-ref" th:href="@{/operation/edit/{id}(id=${operation.id})}">
+                        <div class="operation-date" th:text="${operation.date}">Date</div>
                         <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
+                            <div th:text="${operation.source.name}">From</div>
+                            <div th:text="${operation.destination.name}">To</div>
                         </div>
-                        <div class="operation-amount financial">UZS 123</div>
+                        <div class="operation-amount financial" th:text="|${currency} ${operation.balanceChange}|"></div>
                     </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
-                </div>
-                <div class="operation">
-                    <a class="operation-ref">
-                        <div class="operation-date">Date</div>
-                        <div class="operation-accounts">
-                            <div>From</div>
-                            <div>To</div>
-                        </div>
-                        <div class="operation-amount financial">UZS 123</div>
-                    </a>
-                    <a class="operation-delete-ref material-icons" href="">delete</a>
+                    <a class="operation-delete-ref material-icons" th:href="@{/operation/delete/{id}(id=${operation.id})}">delete</a>
                 </div>
             </div>
 

@@ -35,6 +35,10 @@ abstract public class OperationMember {
 
     abstract public BigDecimal getBalance();
 
+    abstract public boolean isAccount();
+
+    abstract public boolean isCategory();
+
     public long getId() {
         return id;
     }

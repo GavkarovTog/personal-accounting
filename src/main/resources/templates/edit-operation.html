@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit operation</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Edit operation</h1>
+    </header>
+
+    <form method="post" th:action="@{''}" th:object="${operationEditionForm}" class="input-form">
+        <div class="input-blocks">
+            <div class="input-block">
+                <h3>Operation type</h3>
+                <select th:field="*{operationType}">
+                    <option th:value="Expense" checked>Expense</option>
+                    <option th:value="Income">Income</option>
+                    <option th:value="Transfer">Transfer</option>
+                </select>
+                <h6 class="error" th:errors="*{operationType}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('operationType')}" class="hidden">Error</h6>
+            </div>
+
+            <div class="horizontal-input-blocks absent">
+                <div class="input-block">
+                    <h3>Account</h3>
+                    <select th:field="*{from}">
+                        <option th:each="account: ${accounts}" th:value="${account.id}" th:text="${account.name}">
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{from}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('from')}" class="hidden">Error</h6>
+                </div>
+
+                <div class="input-block">
+                    <h3>Expense category</h3>
+                    <select th:field="*{to}">
+                        <option th:each="expense: ${expenses}" th:value="${expense.id}" th:text="${expense.name}">
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{to}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('to')}" class="hidden">Error</h6>
+                </div>
+            </div>
+
+            <div class="horizontal-input-blocks absent">
+                <div class="input-block">
+                    <h3>Account</h3>
+                    <select th:field="*{to}">
+                        <option th:each="account: ${accounts}" th:value="${account.id}" th:text="${account.name}">
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{to}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('to')}" class="hidden">Error</h6>
+                </div>
+
+                <div class="input-block">
+                    <h3>Income category</h3>
+                    <select th:field="*{from}">
+                        <option th:each="income: ${incomes}" th:value="${income.id}" th:text="${income.name}">Account #1
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{from}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('from')}" class="hidden">Error</h6>
+                </div>
+            </div>
+
+            <div class="horizontal-input-blocks absent">
+                <div class="input-block">
+                    <h3>From</h3>
+                    <select th:field="*{from}">
+                        <option th:each="account: ${accounts}" th:value="${account.id}" th:text="${account.name}">
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{from}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('from')}" class="hidden">Error</h6>
+                </div>
+
+                <div class="input-block">
+                    <h3>To</h3>
+                    <select th:field="*{to}">
+                        <option th:each="account: ${accounts}" th:value="${account.id}" th:text="${account.name}">
+                        </option>
+                    </select>
+                    <h6 class="error" th:errors="*{to}">Error</h6>
+                    <h6 th:if="${! #fields.hasErrors('to')}" class="hidden">Error</h6>
+                </div>
+            </div>
+
+            <div class="input-block">
+                <h3>Amount</h3>
+                <input type="number" step="0.00000001" th:field="*{amount}">
+                <h6 class="error" th:errors="*{amount}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('amount')}" class="hidden">Error</h6>
+            </div>
+
+            <div class="input-block">
+                <h3>Date</h3>
+                <input type="date" th:max="${today}" th:field="*{date}">
+                <h6 class="error" th:errors="*{date}">Error</h6>
+                <h6 th:if="${! #fields.hasErrors('date')}" class="hidden">Error</h6>
+            </div>
+        </div>
+
+        <div class="buttons-group">
+            <a th:href="@{/operation}" class="ref-button">Cancel</a>
+            <input class="confirm-button" type="submit" value="Confirm"></input>
+        </div>
+    </form>
+
+    <script>
+        const horizontalBlocks = document.getElementsByClassName("horizontal-input-blocks");
+        for (let i = 0; i < horizontalBlocks.length; i ++) {
+            document.body.appendChild(horizontalBlocks[0]);
+        }
+
+        const operationTypes = ["Expense", "Income", "Transfer"];
+        const currentOperationType = document.getElementById("operationType");
+        currentOperationType.addEventListener("change", () => {
+            const indexOfBlock = operationTypes.indexOf(currentOperationType.value);
+
+            const activeBlocks = document.getElementsByClassName("active-horizontal-block");
+            while (activeBlocks.length != 0) {
+                activeBlocks[0].remove();
+            }
+
+            const newBlock = horizontalBlocks[indexOfBlock].cloneNode(true);
+            newBlock.classList.add("active-horizontal-block")
+            newBlock.classList.remove("absent");
+
+            const inputBlocksDiv = document.getElementsByClassName("input-blocks")[0];
+            inputBlocksDiv.insertBefore(newBlock, inputBlocksDiv.children[1]);            
+        })
+
+        currentOperationType.dispatchEvent(new Event("change"));
+    </script>
+</body>
+
+</html>

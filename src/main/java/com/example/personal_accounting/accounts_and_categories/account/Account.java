@@ -37,6 +37,16 @@ public class Account extends OperationMember {
         return currentBalance;
     }
 
+    @Override
+    public boolean isAccount() {
+        return true;
+    }
+
+    @Override
+    public boolean isCategory() {
+        return false;
+    }
+
     public String getName() {
         return name;
     }

@@ -5,7 +5,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import com.example.personal_accounting.operation.dto.OperationCreationForm;
-import com.example.personal_accounting.operation.dto.OperationType;
+import com.example.personal_accounting.operation.dto.OperationEditionForm;
 import com.example.personal_accounting.shared_entities.OperationMemberService;
 
 public class OperationValidator implements Validator {
@@ -14,7 +14,7 @@ public class OperationValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.equals(OperationCreationForm.class);
+        return clazz.equals(OperationCreationForm.class) || clazz.equals(OperationEditionForm.class);
     }
 
     @Override
@@ -24,8 +24,9 @@ public class OperationValidator implements Validator {
         }
         
         if (target instanceof OperationCreationForm creationForm) {
-
             validateEntitiesExistAndNotTheSame(creationForm.from, creationForm.to, errors);
+        } else if (target instanceof OperationEditionForm editionForm) {
+            validateEntitiesExistAndNotTheSame(editionForm.from, editionForm.to, errors);
         }
     }
 

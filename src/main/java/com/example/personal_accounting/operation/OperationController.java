@@ -3,7 +3,7 @@ package com.example.personal_accounting.operation;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,6 +25,8 @@ import com.example.personal_accounting.accounts_and_categories.account.AccountSe
 import com.example.personal_accounting.accounts_and_categories.category.Category;
 import com.example.personal_accounting.accounts_and_categories.category.CategoryService;
 import com.example.personal_accounting.operation.dto.OperationCreationForm;
+import com.example.personal_accounting.operation.dto.OperationEditionForm;
+import com.example.personal_accounting.operation.dto.OperationType;
 import com.example.personal_accounting.operation.validation.OperationValidator;
 import com.example.personal_accounting.settings.UserSettingsService;
 
@@ -80,6 +83,72 @@ public class OperationController {
 
         return "redirect:/operation";
     }
+
+    @GetMapping("/edit/{id}")
+    public String editOperation(OperationEditionForm operationEditionForm, @PathVariable long id) {
+        Optional<Operation> operation = operationService.getOperation(id);
+        if (! operation.isPresent()) {
+            throw new UnsupportedOperationException("Operation with such id is absent");
+        }
+
+        Operation operationEntity = operation.orElseThrow();
+        if (operationEntity.getDestination().isCategory()) {
+            operationEditionForm.operationType = OperationType.Expense;
+        } else if (operationEntity.getSource().isCategory()) {
+            operationEditionForm.operationType = OperationType.Income;
+        } else {
+            operationEditionForm.operationType = OperationType.Transfer;
+        }
+
+        operationEditionForm.from = operationEntity.getSource().getId();
+        operationEditionForm.to = operationEntity.getDestination().getId();
+        operationEditionForm.amount = operationEntity.getBalanceChange();
+        operationEditionForm.date = operationEntity.getDate();
+
+        return "edit-operation";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editOperation(@Validated OperationEditionForm operationEditionForm, BindingResult bindingResult, @PathVariable long id) {
+        Optional<Operation> operation = operationService.getOperation(id);
+        if (! operation.isPresent()) {
+            throw new UnsupportedOperationException("Operation with such id is absent");
+        }
+        
+        if (bindingResult.hasErrors()) {
+            return "edit-operation";
+        }
+
+        operationService.editOperation(
+            id,
+            operationEditionForm.from,
+            operationEditionForm.to,
+            operationEditionForm.amount,
+            operationEditionForm.date
+        );
+
+        return "redirect:/operation";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteOperation(@PathVariable long id, Model model) {
+        if (! operationService.getOperation(id).isPresent()) {
+            throw new UnsupportedOperationException("Unable to delete missing operation");
+        }
+
+        return "delete-operation";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteOperation(@PathVariable long id) {
+        if (! operationService.getOperation(id).isPresent()) {
+            throw new UnsupportedOperationException("Unable to delete missing operation");
+        }
+
+        operationService.deleteOperation(id);
+
+        return "redirect:/operation";
+    }
     
     @ModelAttribute("currency")
     public String currency() {
@@ -104,5 +173,10 @@ public class OperationController {
     @ModelAttribute("today")
     public String today() {
         return LocalDate.now().toString();
+    }
+
+    @ModelAttribute("operations")
+    public List<Operation> operations() {
+        return operationService.getAllOperations();
     }
 }

@@ -33,6 +33,16 @@ public class Category extends OperationMember {
     }
 
     @Override
+    public boolean isAccount() {
+        return false;
+    }
+
+    @Override
+    public boolean isCategory() {
+        return true;
+    }
+
+    @Override
     public BigDecimal getBalance() {
         return BigDecimal.ZERO;
     }
